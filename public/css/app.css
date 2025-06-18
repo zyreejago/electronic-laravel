@@ -1,0 +1,53 @@
+/* General Styles */
+body {
+    font-family: 'Figtree', sans-serif;
+    background-color: #f8f9fa;
+}
+
+/* Navigation */
+.navbar {
+    box-shadow: 0 2px 4px rgba(0,0,0,.1);
+}
+
+/* Cards */
+.card {
+    box-shadow: 0 2px 4px rgba(0,0,0,.05);
+    border: none;
+    margin-bottom: 1rem;
+}
+
+/* Forms */
+.form-control:focus {
+    border-color: #80bdff;
+    box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+}
+
+/* Buttons */
+.btn {
+    border-radius: 0.25rem;
+}
+
+/* Alerts */
+.alert {
+    border: none;
+    border-radius: 0.25rem;
+}
+
+/* Tables */
+.table {
+    background-color: white;
+}
+
+.table thead th {
+    border-top: none;
+    background-color: #f8f9fa;
+}
+
+/* Utilities */
+.shadow-sm {
+    box-shadow: 0 .125rem .25rem rgba(0,0,0,.075)!important;
+}
+
+.rounded {
+    border-radius: 0.25rem!important;
+} 
