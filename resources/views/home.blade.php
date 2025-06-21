@@ -47,6 +47,18 @@
                                             <i class="fas fa-chevron-right ms-auto"></i>
                                         </div>
                                     </a>
+                                    <a href="{{ route('admin.customers.index') }}" class="list-group-item list-group-item-action border-0 p-4">
+                                        <div class="d-flex align-items-center">
+                                            <div class="rounded-circle bg-primary bg-opacity-10 text-primary p-2 me-3" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
+                                                <i class="fas fa-users-cog"></i>
+                                            </div>
+                                            <div>
+                                                <h6 class="mb-0 fw-bold">Manage Users</h6>
+                                                <small class="text-muted">Add, edit, and delete technicians</small>
+                                            </div>
+                                            <i class="fas fa-chevron-right ms-auto"></i>
+                                        </div>
+                                    </a>
                                     <a href="{{ route('service-components.index') }}" class="list-group-item list-group-item-action border-0 p-4">
                                         <div class="d-flex align-items-center">
                                             <div class="rounded-circle bg-primary bg-opacity-10 text-primary p-2 me-3" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">

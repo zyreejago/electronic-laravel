@@ -26,10 +26,17 @@ class Booking extends Model
         'emergency_fee',
         'is_emergency',
         'repair_report',
+        // Tambahkan field pemeriksaan awal
+        'damage_description',
+        'estimated_cost',
+        'estimated_duration_hours',
+        'inspection_completed_at',
+        'inspected_by',
     ];
 
     protected $casts = [
         'scheduled_at' => 'datetime',
+        'inspection_completed_at' => 'datetime',
     ];
 
     public function user()
@@ -45,6 +52,14 @@ class Booking extends Model
     public function technician()
     {
         return $this->belongsTo(Technician::class);
+    }
+
+    // Add this new relationship
+    public function technicians()
+    {
+        return $this->belongsToMany(Technician::class, 'booking_technicians')
+                    ->withPivot('role')
+                    ->withTimestamps();
     }
 
     public function rating()

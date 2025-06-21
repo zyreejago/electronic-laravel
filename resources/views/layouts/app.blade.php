@@ -74,6 +74,16 @@
                                         <i class="fas fa-chart-line me-1"></i> Reports
                                     </a>
                                 </li>
+                                <li class="nav-item">
+                                    <a class="nav-link {{ request()->routeIs('admin.admins.*') ? 'active fw-bold' : '' }}" href="{{ route('admin.admins.index') }}">
+                                        <i class="fas fa-user-shield me-1"></i> Admins
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link {{ request()->routeIs('admin.customers.*') ? 'active fw-bold' : '' }}" href="{{ route('admin.customers.index') }}">
+                                        <i class="fas fa-users me-1"></i> Customers
+                                    </a>
+                                </li>
                                 @elseif(auth()->user()->isTechnician())
                                 <li class="nav-item">
                                     <a class="nav-link {{ request()->routeIs('technician.bookings.*') ? 'active fw-bold' : '' }}" href="{{ route('technician.bookings.index') }}">

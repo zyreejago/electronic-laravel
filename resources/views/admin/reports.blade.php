@@ -323,3 +323,12 @@
     </script>
     @endpush
 </x-app-layout>
+
+<div class="d-flex gap-2">
+    <a href="{{ route('admin.export.bookings', request()->query()) }}" class="btn btn-success">
+        <i class="fas fa-file-excel me-1"></i> Export Excel
+    </a>
+    <a href="{{ route('admin.export.bookings.pdf', request()->query()) }}" class="btn btn-danger">
+        <i class="fas fa-file-pdf me-1"></i> Export PDF
+    </a>
+</div>

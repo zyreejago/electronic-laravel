@@ -220,6 +220,56 @@
                             @endif
                         </div>
 
+                        <hr class="my-4">
+
+                        <!-- Initial Inspection Section -->
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="rounded-circle bg-primary bg-opacity-10 text-primary p-2 me-3" 
+                                 style="width: 45px; height: 45px; display: flex; align-items: center; justify-content: center;">
+                                <i class="fas fa-search fa-lg"></i>
+                            </div>
+                            <div>
+                                <h6 class="fw-bold mb-0">Pemeriksaan Awal</h6>
+                                <small class="text-muted">Hasil pemeriksaan awal oleh teknisi</small>
+                            </div>
+                        </div>
+                        <div class="ps-5 mb-4">
+                            @if($booking->inspection_completed_at)
+                                <div class="alert alert-success">
+                                    <div class="row">
+                                        <div class="col-md-12 mb-3">
+                                            <strong>Status:</strong> <span class="badge bg-success">Pemeriksaan Selesai</span><br>
+                                            <small class="text-muted">Diselesaikan pada: {{ $booking->inspection_completed_at->format('d M Y H:i') }}</small>
+                                        </div>
+                                        @if($booking->damage_description)
+                                            <div class="col-md-12 mb-3">
+                                                <strong>Deskripsi Kerusakan:</strong><br>
+                                                <div class="mt-2">{!! nl2br(e($booking->damage_description)) !!}</div>
+                                            </div>
+                                        @endif
+                                        @if($booking->estimated_cost)
+                                            <div class="col-md-6 mb-3">
+                                                <strong>Estimasi Biaya:</strong><br>
+                                                <span class="fs-5 text-primary">Rp {{ number_format($booking->estimated_cost, 0, ',', '.') }}</span>
+                                            </div>
+                                        @endif
+                                        @if($booking->estimated_duration_hours)
+                                            <div class="col-md-6 mb-3">
+                                                <strong>Estimasi Durasi:</strong><br>
+                                                <span class="fs-5 text-info">{{ $booking->estimated_duration_hours }} jam</span>
+                                            </div>
+                                        @endif
+                                    </div>
+                                </div>
+                            @else
+                                <div class="alert alert-warning">
+                                    <i class="fas fa-clock me-2"></i>Pemeriksaan awal belum dilakukan. Teknisi akan melakukan pemeriksaan setelah booking dikonfirmasi.
+                                </div>
+                            @endif
+                        </div>
+
+                        <hr class="my-4">
+
                         <!-- Scheduling Information -->
                         <div class="d-flex align-items-center mb-3">
                             <div class="rounded-circle bg-info bg-opacity-10 text-info p-2 me-3" 

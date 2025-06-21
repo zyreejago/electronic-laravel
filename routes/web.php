@@ -10,6 +10,9 @@ use App\Http\Controllers\LoyaltyPointController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\ReportsController;
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\CustomerController;
+
 
 Route::get('/', function () {
     return view('welcome');
@@ -76,14 +79,23 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::resource('technicians', TechnicianController::class);
     
     // Prefixed admin routes
-    Route::prefix('admin')->name('admin.')->group(function () {
+    Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
+        Route::resource('admins', AdminController::class);
+        Route::resource('customers', CustomerController::class);
+        Route::get('customers/{customer}/change-password', [CustomerController::class, 'changePasswordForm'])->name('customers.change-password-form');
+        Route::put('customers/{customer}/change-password', [CustomerController::class, 'changePassword'])->name('customers.change-password');
+        Route::put('customers/{customer}/reset-password', [CustomerController::class, 'resetPassword'])->name('customers.reset-password');
+        
         Route::get('/reports', [ReportsController::class, 'index'])->name('reports');
         Route::get('/bookings', [BookingController::class, 'adminIndex'])->name('bookings.index');
         Route::get('/bookings/{booking}', [BookingController::class, 'adminShow'])->name('bookings.show');
         Route::post('/bookings/{booking}/verify-payment', [BookingController::class, 'verifyPayment'])->name('bookings.verify-payment');
         Route::put('/bookings/{booking}', [BookingController::class, 'adminUpdate'])->name('bookings.update');
         Route::post('/bookings/{booking}/assign', [BookingController::class, 'assignTechnician'])->name('bookings.assign');
-    });
+        // Di dalam group admin
+        Route::get('inspections/{booking}', [InspectionController::class, 'show'])->name('inspections.show');
+        Route::put('inspections/{booking}', [InspectionController::class, 'update'])->name('inspections.update');
+});
 });
 
 // Test WhatsApp Notification
@@ -115,3 +127,5 @@ Route::get('/test-whatsapp/{phone?}', function ($phone = null) {
     }
     return 'Please provide a phone number: /test-whatsapp/08123456789';
 });
+
+require __DIR__.'/pdf.php';

@@ -209,6 +209,106 @@
 
             <!-- Technician and Status Information -->
             <div class="col-lg-4">
+                <!-- Initial Inspection Button -->
+                <div class="card border-0 shadow rounded-4 overflow-hidden mb-4">
+                    <div class="card-header p-0">
+                        <div style="background: linear-gradient(90deg, #6f42c1, #5a2d91);" class="text-white p-4">
+                            <h5 class="card-title mb-0 fw-bold">
+                                <i class="fas fa-search me-2"></i>Pemeriksaan Awal
+                            </h5>
+                        </div>
+                        <!-- Pemeriksaan Awal Section -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h6 class="m-0 font-weight-bold text-primary">
+                                    <i class="fas fa-search me-2"></i>Pemeriksaan Awal
+                                </h6>
+                            </div>
+                            <div class="card-body">
+                                @if($booking->inspection_completed_at)
+                                    <div class="row">
+                                        <div class="col-md-12 mb-3">
+                                            <div class="alert alert-success">
+                                                <strong>Status:</strong> <span class="badge bg-success">Pemeriksaan Selesai</span><br>
+                                                <small>Diselesaikan pada: {{ $booking->inspection_completed_at->format('d M Y H:i') }}</small>
+                                                @if($booking->inspectedBy)
+                                                    <br><small>Oleh: {{ $booking->inspectedBy->name }}</small>
+                                                @endif
+                                            </div>
+                                        </div>
+                                        @if($booking->damage_description)
+                                            <div class="col-md-12 mb-3">
+                                                <strong>Deskripsi Kerusakan:</strong>
+                                                <div class="mt-2 p-3 bg-light rounded">{!! nl2br(e($booking->damage_description)) !!}</div>
+                                            </div>
+                                        @endif
+                                        <div class="col-md-6">
+                                            @if($booking->estimated_cost)
+                                                <strong>Estimasi Biaya:</strong><br>
+                                                <span class="h5 text-primary">Rp {{ number_format($booking->estimated_cost, 0, ',', '.') }}</span>
+                                            @endif
+                                        </div>
+                                        <div class="col-md-6">
+                                            @if($booking->estimated_duration_hours)
+                                                <strong>Estimasi Durasi:</strong><br>
+                                                <span class="h5 text-info">{{ $booking->estimated_duration_hours }} jam</span>
+                                            @endif
+                                        </div>
+                                    </div>
+                                    <div class="mt-3">
+                                        <a href="{{ route('admin.inspections.show', $booking) }}" class="btn btn-outline-primary">
+                                            <i class="fas fa-edit me-2"></i>Edit Pemeriksaan
+                                        </a>
+                                    </div>
+                                @else
+                                    <div class="alert alert-warning">
+                                        <i class="fas fa-clock me-2"></i>Pemeriksaan awal belum dilakukan.
+                                    </div>
+                                    @if($booking->technician_id)
+                                        <a href="{{ route('admin.inspections.show', $booking) }}" class="btn btn-primary">
+                                            <i class="fas fa-search me-2"></i>Mulai Pemeriksaan Awal
+                                        </a>
+                                    @else
+                                        <small class="text-muted">Assign teknisi terlebih dahulu untuk memulai pemeriksaan.</small>
+                                    @endif
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body p-4">
+                        @if($booking->inspection_completed_at)
+                            <div class="alert alert-success border-0 p-3" style="background: rgba(28, 200, 138, 0.1); color: #13855c; border-left: 4px solid #1cc88a;">
+                                <div class="d-flex">
+                                    <div class="me-3">
+                                        <i class="fas fa-check-circle"></i>
+                                    </div>
+                                    <div>
+                                        <p class="mb-1 fw-bold">Pemeriksaan Telah Selesai</p>
+                                        <p class="mb-0 small">Diselesaikan pada: {{ $booking->inspection_completed_at->format('d M Y H:i') }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        @else
+                            <div class="text-center py-3">
+                                <div class="rounded-circle bg-purple bg-opacity-10 text-purple p-3 mx-auto mb-3" 
+                                     style="width: 70px; height: 70px; display: flex; align-items: center; justify-content: center; color: #6f42c1;">
+                                    <i class="fas fa-clipboard-check fa-2x"></i>
+                                </div>
+                                <h6 class="fw-bold mb-2">Pemeriksaan Awal Diperlukan</h6>
+                                <p class="text-muted mb-3 small">Lakukan pemeriksaan awal untuk menentukan kerusakan dan estimasi biaya.</p>
+                            </div>
+                        @endif
+                        
+                        <div class="d-grid">
+                            <a href="{{ route('admin.inspections.show', $booking->id) }}" class="btn btn-lg" 
+                               style="background: linear-gradient(135deg, #6f42c1, #5a2d91); border: none; color: white;">
+                                <i class="fas fa-{{ $booking->inspection_completed_at ? 'eye' : 'clipboard-check' }} me-2"></i>
+                                {{ $booking->inspection_completed_at ? 'Lihat Hasil Pemeriksaan' : 'Mulai Pemeriksaan Awal' }}
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Technician Information -->
                 <div class="card border-0 shadow rounded-4 overflow-hidden mb-4">
                     <div class="card-header p-0">
