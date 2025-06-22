@@ -1,14 +1,14 @@
-<x-app-layout>
-    <x-slot name="header">
-        <div class="d-flex justify-content-between align-items-center">
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                {{ __('Booking Detail') }}
-            </h2>
-            <a href="{{ route('technician.bookings.index') }}" class="btn btn-outline-success btn-lg shadow-sm">
-                <i class="fas fa-arrow-left me-2"></i>Back to Bookings
-            </a>
-        </div>
-    </x-slot>
+@extends('layouts.app')
+
+@section('content')
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            {{ __('Booking Detail') }}
+        </h2>
+        <a href="{{ route('technician.bookings.index') }}" class="btn btn-outline-success btn-lg shadow-sm">
+            <i class="fas fa-arrow-left me-2"></i>Back to Bookings
+        </a>
+    </div>
 
     <div class="container py-4">
         <!-- Booking Status Banner -->
@@ -394,4 +394,10 @@
         });
     </script>
     @endpush
-</x-app-layout>
+
+    <script>
+    function updateProgressValue(value) {
+        document.getElementById('progressValue').textContent = value + '%';
+    }
+    </script>
+@endsection

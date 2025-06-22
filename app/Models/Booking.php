@@ -26,18 +26,46 @@ class Booking extends Model
         'emergency_fee',
         'is_emergency',
         'repair_report',
-        // Tambahkan field pemeriksaan awal
+        // Field pemeriksaan awal
         'damage_description',
         'estimated_cost',
         'estimated_duration_hours',
         'inspection_completed_at',
         'inspected_by',
+        // Field dashboard teknisi baru
+        'overall_progress_percentage',
+        'work_started_at',
+        'work_paused_at',
+        'current_status_notes',
+        'estimated_work_hours',
+        'actual_work_hours',
+        'last_customer_update',
+        'requires_customer_approval'
     ];
 
     protected $casts = [
         'scheduled_at' => 'datetime',
         'inspection_completed_at' => 'datetime',
+        'work_started_at' => 'datetime',
+        'work_paused_at' => 'datetime',
+        'last_customer_update' => 'datetime'
     ];
+
+    // Relasi baru
+    public function spareparts()
+    {
+        return $this->hasMany(BookingSparepart::class);
+    }
+
+    public function additionalWorkRequests()
+    {
+        return $this->hasMany(AdditionalWorkRequest::class);
+    }
+
+    public function progressNotes()
+    {
+        return $this->hasMany(BookingProgressNote::class);
+    }
 
     public function user()
     {

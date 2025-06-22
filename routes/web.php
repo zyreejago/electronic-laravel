@@ -12,6 +12,9 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\ReportsController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\InspectionController;
+use App\Http\Controllers\TechnicianBookingController;
+use Illuminate\Support\Facades\Auth;
 
 
 Route::get('/', function () {
@@ -66,6 +69,27 @@ Route::middleware(['auth', 'role:technician'])->group(function () {
     Route::put('/technician/bookings/{booking}/update-status', [BookingController::class, 'updateStatus'])->name('technician.bookings.update-status');
     Route::post('/technician/bookings/{booking}/components', [BookingController::class, 'addComponent'])->name('technician.bookings.add-component');
     Route::post('/technician/bookings/{booking}/repair-report', [BookingController::class, 'submitRepairReport'])->name('technician.bookings.repair-report');
+    
+    // Technician routes
+    Route::middleware(['auth'])->prefix('technician')->name('technician.')->group(function () {
+        // Progress tracking
+        Route::patch('/bookings/{booking}/update-progress', [TechnicianBookingController::class, 'updateProgress'])
+            ->name('bookings.update-progress');
+        
+        // Spare parts
+        Route::post('/bookings/{booking}/add-sparepart', [TechnicianBookingController::class, 'addSparepart'])
+            ->name('bookings.add-sparepart');
+        Route::delete('/bookings/{booking}/spareparts/{sparepart}', [TechnicianBookingController::class, 'removeSparepart'])
+            ->name('bookings.remove-sparepart');
+        
+        // Additional work requests
+        Route::post('/bookings/{booking}/request-additional-work', [TechnicianBookingController::class, 'requestAdditionalWork'])
+            ->name('bookings.request-additional-work');
+        
+        // Progress notes
+        Route::post('/bookings/{booking}/add-progress-note', [TechnicianBookingController::class, 'addProgressNote'])
+            ->name('bookings.add-progress-note');
+    });
 });
 
 // Admin Routes
