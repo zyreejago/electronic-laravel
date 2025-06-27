@@ -12,6 +12,8 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\ReportsController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\CustomerDashboardController;
+use App\Http\Controllers\CustomerBookingController; // Add this line too
 use App\Http\Controllers\InspectionController;
 use App\Http\Controllers\TechnicianBookingController;
 use Illuminate\Support\Facades\Auth;
@@ -43,6 +45,7 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 // });
 
 // User routes
+// Customer Dashboard Routes (tambahkan di dalam middleware auth dan role:user)
 Route::middleware(['auth', 'role:user'])->group(function () {
     // User booking routes
     Route::get('/bookings', [BookingController::class, 'index'])->name('bookings.index');
@@ -60,6 +63,26 @@ Route::middleware(['auth', 'role:user'])->group(function () {
     Route::post('/notifications/{notification}/mark-as-read', [NotificationController::class, 'markAsRead'])->name('notifications.mark-as-read');
 
     Route::post('/bookings/{booking}/pay', [BookingController::class, 'pay'])->name('bookings.pay');
+    
+    // Customer Dashboard
+    Route::get('/customer/dashboard', [CustomerDashboardController::class, 'index'])->name('customer.dashboard');
+    
+    // Customer Bookings
+    Route::prefix('customer/bookings')->name('customer.bookings.')->group(function () {
+        Route::get('/', [CustomerBookingController::class, 'index'])->name('index');
+        Route::get('/{booking}', [CustomerBookingController::class, 'show'])->name('show');
+        Route::get('/history/all', [CustomerBookingController::class, 'history'])->name('history');
+        Route::get('/{booking}/download-handover', [CustomerBookingController::class, 'downloadHandover'])->name('download-handover');
+        Route::get('/history/export', [CustomerBookingController::class, 'exportHistory'])->name('export-history');
+    });
+    
+    // Additional Work Requests
+    Route::prefix('customer/additional-work')->name('customer.additional-work.')->group(function () {
+        Route::get('/', [AdditionalWorkResponseController::class, 'index'])->name('index');
+        Route::get('/{additionalWorkRequest}', [AdditionalWorkResponseController::class, 'show'])->name('show');
+        Route::post('/{additionalWorkRequest}/approve', [AdditionalWorkResponseController::class, 'approve'])->name('approve');
+        Route::post('/{additionalWorkRequest}/reject', [AdditionalWorkResponseController::class, 'reject'])->name('reject');
+    });
 });
 
 // Technician Routes

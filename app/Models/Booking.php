@@ -19,6 +19,7 @@ class Booking extends Model
         'scheduled_at',
         'status',
         'total_price',
+        'completed_at', // Add this line
         'payment_proof',
         'ewallet_type',
         'is_paid',
@@ -45,6 +46,7 @@ class Booking extends Model
 
     protected $casts = [
         'scheduled_at' => 'datetime',
+        'completed_at' => 'datetime', // Add this line
         'inspection_completed_at' => 'datetime',
         'work_started_at' => 'datetime',
         'work_paused_at' => 'datetime',
