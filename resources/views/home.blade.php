@@ -95,6 +95,18 @@
                                             <i class="fas fa-chevron-right ms-auto"></i>
                                         </div>
                                     </a>
+                                    <a href="{{ route('admin.inventory.index') }}" class="list-group-item list-group-item-action border-0 p-4">
+                                        <div class="d-flex align-items-center">
+                                            <div class="rounded-circle bg-primary bg-opacity-10 text-primary p-2 me-3" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
+                                                <i class="fas fa-boxes"></i>
+                                            </div>
+                                            <div>
+                                                <h6 class="mb-0 fw-bold">Daftar Stok</h6>
+                                                <small class="text-muted">Kelola inventori dan stok barang</small>
+                                            </div>
+                                            <i class="fas fa-chevron-right ms-auto"></i>
+                                        </div>
+                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -280,31 +292,40 @@
                                     <div class="card-header p-0">
                                         <div style="background: linear-gradient(90deg, #36b9cc, #258391);" class="text-white p-4">
                                             <h5 class="card-title mb-0 fw-bold">
-                                                <i class="fas fa-tasks me-2"></i>Today's Schedule
+                                                <i class="fas fa-history me-2"></i>Recent Schedule
                                             </h5>
                                         </div>
                                     </div>
                                     <div class="card-body p-4">
                                         @php
-                                            $todayBookings = auth()->user()->technician ? auth()->user()->technician->bookings()->whereDate('scheduled_at', now())->get() : collect();
+                                            $recentBookings = auth()->user()->technician ? auth()->user()->technician->bookings()->latest()->take(10)->get() : collect();
                                         @endphp
-                                        @if($todayBookings->count() > 0)
+                                        @if($recentBookings->count() > 0)
                                             <div class="list-group">
-                                                @foreach($todayBookings as $booking)
+                                                @foreach($recentBookings as $booking)
                                                     <div class="list-group-item border-0 p-3 mb-3 rounded-3" style="background-color: rgba(54, 185, 204, 0.1);">
                                                         <div class="d-flex align-items-center">
-                                                            <div class="rounded-circle bg-info bg-opacity-10 text-info p-2 me-3" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
-                                                                <i class="fas fa-clock"></i>
+                                                            <div class="rounded-circle text-white d-flex align-items-center justify-content-center me-3" 
+                                                                 style="width: 40px; height: 40px; background: linear-gradient(135deg, 
+                                                                 {{ $booking->status === 'pending' ? '#f6c23e, #dda20a' : 
+                                                                    ($booking->status === 'in_progress' ? '#36b9cc, #258391' : 
+                                                                    ($booking->status === 'confirmed' ? '#4e73df, #224abe' : 
+                                                                    ($booking->status === 'completed' ? '#1cc88a, #13855c' : '#e74a3b, #be2617'))) }});">
+                                                                <i class="fas fa-{{ $booking->status === 'pending' ? 'clock' : 
+                                                                                  ($booking->status === 'in_progress' ? 'spinner fa-spin' : 
+                                                                                  ($booking->status === 'confirmed' ? 'check-circle' : 
+                                                                                  ($booking->status === 'completed' ? 'check-double' : 'times-circle'))) }}"></i>
                                                             </div>
                                                             <div>
                                                                 <h6 class="mb-0 fw-bold">{{ $booking->service->name ?? 'Unknown Service' }}</h6>
-                                                                <small class="text-muted">{{ $booking->scheduled_at->format('H:i') }} - {{ $booking->user->name }}</small>
+                                                                <small class="text-muted">{{ $booking->scheduled_at->format('d M Y H:i') }} - {{ $booking->user->name }}</small>
                                                             </div>
                                                             <span class="badge rounded-pill text-white px-3 py-2 ms-auto fw-bold" 
                                                                   style="background: linear-gradient(135deg, 
                                                                   {{ $booking->status === 'pending' ? '#f6c23e, #dda20a' : 
                                                                      ($booking->status === 'confirmed' ? '#4e73df, #224abe' : 
-                                                                     ($booking->status === 'completed' ? '#1cc88a, #13855c' : '#e74a3b, #be2617')) }});">
+                                                                     ($booking->status === 'in_progress' ? '#36b9cc, #258391' : 
+                                                                     ($booking->status === 'completed' ? '#1cc88a, #13855c' : '#e74a3b, #be2617'))) }});">
                                                                 {{ ucfirst($booking->status) }}
                                                             </span>
                                                         </div>
@@ -316,8 +337,8 @@
                                                 <div class="rounded-circle bg-light p-3 mx-auto mb-3" style="width: 80px; height: 80px; display: flex; align-items: center; justify-content: center;">
                                                     <i class="fas fa-calendar-day fa-3x text-muted"></i>
                                                 </div>
-                                                <h6 class="fw-bold">No Bookings Today</h6>
-                                                <p class="text-muted mb-0">You have no scheduled bookings for today.</p>
+                                                <h6 class="fw-bold">No Recent Bookings</h6>
+                                                <p class="text-muted mb-0">You have no recent bookings.</p>
                                             </div>
                                         @endif
                                     </div>
@@ -445,11 +466,13 @@
                                                             <div class="rounded-circle text-white d-flex align-items-center justify-content-center me-3" 
                                                                  style="width: 40px; height: 40px; background: linear-gradient(135deg, 
                                                                  {{ $booking->status === 'pending' ? '#f6c23e, #dda20a' : 
+                                                                    ($booking->status === 'in_progress' ? '#36b9cc, #258391' : 
                                                                     ($booking->status === 'confirmed' ? '#4e73df, #224abe' : 
-                                                                    ($booking->status === 'completed' ? '#1cc88a, #13855c' : '#e74a3b, #be2617')) }});">
+                                                                    ($booking->status === 'completed' ? '#1cc88a, #13855c' : '#e74a3b, #be2617'))) }});">
                                                                 <i class="fas fa-{{ $booking->status === 'pending' ? 'clock' : 
+                                                                                  ($booking->status === 'in_progress' ? 'spinner fa-spin' : 
                                                                                   ($booking->status === 'confirmed' ? 'check-circle' : 
-                                                                                  ($booking->status === 'completed' ? 'check-double' : 'times-circle')) }}"></i>
+                                                                                  ($booking->status === 'completed' ? 'check-double' : 'times-circle'))) }}"></i>
                                                             </div>
                                                             <div>
                                                                 <h6 class="mb-0 fw-bold">{{ $booking->service->name ?? 'Unknown Service' }}</h6>

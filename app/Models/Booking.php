@@ -113,4 +113,37 @@ class Booking extends Model
             ->withPivot('quantity', 'price_at_time')
             ->withTimestamps();
     }
+
+    public function inventoryUsages()
+    {
+        return $this->hasMany(InventoryUsage::class);
+    }
+
+    // Tambahkan method baru untuk menghitung inventory cost
+    public function getInventoryCostAttribute()
+    {
+        return $this->inventoryUsages->sum(function ($usage) {
+            // Bisa error jika inventoryItem null
+            if (!$usage->inventoryItem) {
+                \Log::warning('InventoryItem not found for usage ID: ' . $usage->id);
+                return 0;
+            }
+            return $usage->quantity_used * $usage->inventoryItem->unit_price;
+        });
+    }
+
+    // Method untuk menghitung total price lengkap
+    public function calculateTotalPrice()
+    {
+        $basePrice = $this->service->price;
+        $componentsPrice = $this->serviceComponents->sum(function ($component) {
+            return $component->pivot->quantity * $component->pivot->price_at_time;
+        });
+        $inventoryPrice = $this->inventory_cost;
+        $deliveryFee = in_array($this->service_type, ['pickup', 'onsite']) ? 50000 : 0;
+        $emergencyFee = $this->is_emergency ? 100000 : 0;
+        $loyaltyDiscount = $this->loyalty_points_used ? ($this->loyalty_points_used * 100) : 0;
+        
+        return $basePrice + $componentsPrice + $inventoryPrice + $deliveryFee + $emergencyFee - $loyaltyDiscount;
+    }
 }

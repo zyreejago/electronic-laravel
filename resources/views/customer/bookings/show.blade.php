@@ -41,10 +41,6 @@
                                     <td class="fw-bold">Tanggal:</td>
                                     <td>{{ $booking->scheduled_at->format('d M Y H:i') }}</td>
                                 </tr>
-                                <tr>
-                                    <td class="fw-bold">Harga:</td>
-                                    <td class="fw-bold text-primary">Rp {{ number_format($booking->total_price, 0, ',', '.') }}</td>
-                                </tr>
                             </table>
                         </div>
                         <div class="col-md-6">
@@ -69,9 +65,121 @@
                             @endif
                         </div>
                     </div>
+
+                    <!-- Total Price Breakdown -->
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <div class="card bg-light">
+                                <div class="card-header">
+                                    <h5 class="mb-0">💰 Rincian Biaya</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-8">
+                                            <table class="table table-sm mb-0">
+                                                <tr>
+                                                    <td>Biaya Service Dasar:</td>
+                                                    <td class="text-end">Rp {{ number_format($booking->service->price, 0, ',', '.') }}</td>
+                                                </tr>
+                                                @if($booking->serviceComponents->count() > 0)
+                                                <tr>
+                                                    <td>Komponen Tambahan:</td>
+                                                    <td class="text-end">Rp {{ number_format($booking->serviceComponents->sum(function($c) { return $c->pivot->quantity * $c->pivot->price_at_time; }), 0, ',', '.') }}</td>
+                                                </tr>
+                                                @endif
+                                                @if(in_array($booking->service_type, ['pickup', 'onsite']))
+                                                <tr>
+                                                    <td>Biaya {{ ucfirst($booking->service_type) }}:</td>
+                                                    <td class="text-end">Rp 50.000</td>
+                                                </tr>
+                                                @endif
+                                                @if($booking->is_emergency)
+                                                <tr>
+                                                    <td>Biaya Emergency:</td>
+                                                    <td class="text-end">Rp 100.000</td>
+                                                </tr>
+                                                @endif
+                                                @if($booking->loyalty_points_used > 0)
+                                                <tr>
+                                                    <td>Diskon Loyalty Points:</td>
+                                                    <td class="text-end text-success">-Rp {{ number_format($booking->loyalty_points_used * 100, 0, ',', '.') }}</td>
+                                                </tr>
+                                                @endif
+                                                <tr class="table-primary fw-bold">
+                                                    <td>Total yang Harus Dibayar:</td>
+                                                    <td class="text-end">Rp {{ number_format($booking->total_price, 0, ',', '.') }}</td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Inventory Usage Details -->
+                    @if($booking->inventoryUsages->count() > 0)
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="mb-0">🔧 Spare Parts yang Digunakan</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>Nama Item</th>
+                                                    <th>Jumlah</th>
+                                                    <th>Harga Satuan</th>
+                                                    <th>Total Harga</th>
+                                                    <th>Teknisi</th>
+                                                    <th>Waktu Penggunaan</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach($booking->inventoryUsages as $usage)
+                                                <tr>
+                                                    <td>{{ $usage->inventoryItem ? $usage->inventoryItem->name : 'Item Tidak Ditemukan' }}</td>
+                                                    <td>{{ $usage->quantity_used }}</td>
+                                                    <td>Rp {{ $usage->inventoryItem ? number_format($usage->inventoryItem->unit_price, 0, ',', '.') : '0' }}</td>
+                                                    <td>Rp {{ $usage->inventoryItem ? number_format($usage->quantity_used * $usage->inventoryItem->unit_price, 0, ',', '.') : '0' }}</td>
+                                                    <td>{{ $usage->technician->user->name ?? 'N/A' }}</td>
+                                                    <td>{{ $usage->used_at->format('d M Y H:i') }}</td>
+                                                </tr>
+                                                @endforeach
+                                            </tbody>
+                                            <tfoot>
+                                                <tr class="table-info fw-bold">
+                                                    <td colspan="3">Total Biaya Spare Parts:</td>
+                                                    <td>Rp {{ number_format($booking->inventory_cost, 0, ',', '.') }}</td>
+                                                    <td colspan="2"></td>
+                                                </tr>
+                                            </tfoot>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @endif
                 </div>
             </div>
         </div>
     </div>
 </div>
 @endsection
+
+<!-- Temporary debugging - hapus setelah selesai -->
+@if(config('app.debug'))
+<div class="alert alert-info">
+    <strong>Debug Info:</strong><br>
+    Booking ID: {{ $booking->id }}<br>
+    Inventory Usages Count: {{ $booking->inventoryUsages->count() }}<br>
+    Inventory Cost: {{ $booking->inventory_cost }}<br>
+    @foreach($booking->inventoryUsages as $usage)
+        Usage {{ $usage->id }}: Item {{ $usage->inventoryItem ? $usage->inventoryItem->name : 'NULL' }}, Qty: {{ $usage->quantity_used }}<br>
+    @endforeach
+</div>
+@endif

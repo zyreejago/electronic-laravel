@@ -203,6 +203,18 @@
         .mb-20 {
             margin-bottom: 20px;
         }
+        
+        /* Payment Method Styles */
+        .payment-method {
+            display: inline-block;
+            padding: 3px 8px;
+            background-color: #4e73df;
+            color: white;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
     </style>
 </head>
 <body>
@@ -278,18 +290,22 @@
                 </tr>
             </thead>
             <tbody>
+                @php $itemNumber = 1; @endphp
+                
+                <!-- Service Base -->
                 <tr>
-                    <td>1</td>
+                    <td>{{ $itemNumber++ }}</td>
                     <td>{{ $booking->service->name }}</td>
                     <td>1</td>
                     <td class="text-right">Rp {{ number_format($booking->service->price, 0, ',', '.') }}</td>
                     <td class="text-right">Rp {{ number_format($booking->service->price, 0, ',', '.') }}</td>
                 </tr>
                 
+                <!-- Service Components -->
                 @if(isset($booking->components) && count($booking->components) > 0)
-                    @foreach($booking->components as $index => $component)
+                    @foreach($booking->components as $component)
                     <tr>
-                        <td>{{ $index + 2 }}</td>
+                        <td>{{ $itemNumber++ }}</td>
                         <td>{{ $component->name }} (Component)</td>
                         <td>1</td>
                         <td class="text-right">Rp {{ number_format($component->price, 0, ',', '.') }}</td>
@@ -298,13 +314,54 @@
                     @endforeach
                 @endif
                 
+                <!-- Spare Parts -->
+                @if($booking->spareparts && count($booking->spareparts) > 0)
+                    @foreach($booking->spareparts as $sparepart)
+                    <tr>
+                        <td>{{ $itemNumber++ }}</td>
+                        <td>
+                            {{ $sparepart->sparepart_name }} (Spare Part)
+                            @if($sparepart->description)
+                                <br><small style="color: #666;">{{ $sparepart->description }}</small>
+                            @endif
+                        </td>
+                        <td>{{ $sparepart->quantity }}</td>
+                        <td class="text-right">Rp {{ number_format($sparepart->unit_price, 0, ',', '.') }}</td>
+                        <td class="text-right">Rp {{ number_format($sparepart->total_price, 0, ',', '.') }}</td>
+                    </tr>
+                    @endforeach
+                @endif
+                
+                <!-- Service Type Fee -->
                 @if($booking->service_type === 'pickup' || $booking->service_type === 'onsite')
                 <tr>
-                    <td>{{ isset($booking->components) ? count($booking->components) + 2 : 2 }}</td>
+                    <td>{{ $itemNumber++ }}</td>
                     <td>{{ $booking->service_type === 'pickup' ? 'Pickup & Delivery Fee' : 'On-site Service Fee' }}</td>
                     <td>1</td>
                     <td class="text-right">Rp {{ number_format(50000, 0, ',', '.') }}</td>
                     <td class="text-right">Rp {{ number_format(50000, 0, ',', '.') }}</td>
+                </tr>
+                @endif
+                
+                <!-- Emergency Fee -->
+                @if($booking->is_emergency)
+                <tr>
+                    <td>{{ $itemNumber++ }}</td>
+                    <td>Emergency Service Fee</td>
+                    <td>1</td>
+                    <td class="text-right">Rp {{ number_format(100000, 0, ',', '.') }}</td>
+                    <td class="text-right">Rp {{ number_format(100000, 0, ',', '.') }}</td>
+                </tr>
+                @endif
+                
+                <!-- Loyalty Points Discount -->
+                @if($booking->loyalty_points_used > 0)
+                <tr>
+                    <td>{{ $itemNumber++ }}</td>
+                    <td>Loyalty Points Discount ({{ $booking->loyalty_points_used }} points)</td>
+                    <td>1</td>
+                    <td class="text-right">-Rp {{ number_format($booking->loyalty_points_used * 100, 0, ',', '.') }}</td>
+                    <td class="text-right">-Rp {{ number_format($booking->loyalty_points_used * 100, 0, ',', '.') }}</td>
                 </tr>
                 @endif
             </tbody>
@@ -312,9 +369,176 @@
         
         <!-- Total Section -->
         <div class="total-section">
+            @php
+                $servicePrice = $booking->service->price;
+                $componentsPrice = 0;
+                $sparepartsPrice = 0;
+                $inventoryPrice = 0; // Add this line
+                $deliveryFee = 0;
+                $emergencyFee = 0;
+                $loyaltyDiscount = 0;
+                
+                // Calculate components price
+                if(isset($booking->components) && count($booking->components) > 0) {
+                    foreach($booking->components as $component) {
+                        $componentsPrice += $component->price;
+                    }
+                }
+                
+                // Calculate spareparts price
+                if($booking->spareparts && count($booking->spareparts) > 0) {
+                    foreach($booking->spareparts as $sparepart) {
+                        $sparepartsPrice += $sparepart->total_price;
+                    }
+                }
+                
+                // Calculate inventory price
+                if($booking->inventoryUsages && count($booking->inventoryUsages) > 0) {
+                    foreach($booking->inventoryUsages as $usage) {
+                        $inventoryPrice += $usage->quantity_used * $usage->inventoryItem->unit_price;
+                    }
+                }
+                
+                // Calculate delivery fee
+                if($booking->service_type === 'pickup' || $booking->service_type === 'onsite') {
+                    $deliveryFee = 50000;
+                }
+                
+                // Calculate emergency fee
+                if($booking->is_emergency) {
+                    $emergencyFee = 100000;
+                }
+                
+                // Calculate loyalty discount
+                if($booking->loyalty_points_used > 0) {
+                    $loyaltyDiscount = $booking->loyalty_points_used * 100;
+                }
+                
+                $subtotal = $servicePrice + $componentsPrice + $sparepartsPrice + $inventoryPrice + $deliveryFee + $emergencyFee - $loyaltyDiscount;
+            @endphp
+            
+            <!-- Breakdown Section -->
+            <div style="margin-bottom: 20px; padding: 15px; background-color: #f8f9fa; border-radius: 5px;">
+                <div style="font-weight: bold; color: #4e73df; margin-bottom: 10px; font-size: 16px;">Price Breakdown</div>
+                
+                <div class="subtotal-row">
+                    <span class="subtotal-label">Base Service ({{ $booking->service->name }}):</span>
+                    <span>Rp {{ number_format($servicePrice, 0, ',', '.') }}</span>
+                </div>
+                
+                @if($componentsPrice > 0)
+                <div class="subtotal-row">
+                    <span class="subtotal-label">Service Components:</span>
+                    <span>Rp {{ number_format($componentsPrice, 0, ',', '.') }}</span>
+                </div>
+                @endif
+                
+                @if($sparepartsPrice > 0 || ($booking->inventoryUsages && count($booking->inventoryUsages) > 0))
+                <!-- Spare Parts & Inventory Usage Breakdown Table -->
+                <div style="margin: 15px 0;">
+                    <div style="font-weight: bold; margin-bottom: 10px; color: #333;">Spare Parts & Inventory Usage Details:</div>
+                    <table style="width: 100%; border-collapse: collapse; margin-bottom: 10px; background-color: white; border-radius: 3px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                        <thead>
+                            <tr style="background-color: #4e73df; color: white;">
+                                <th style="padding: 8px; text-align: left; border: 1px solid #ddd; font-size: 13px;">#</th>
+                                <th style="padding: 8px; text-align: left; border: 1px solid #ddd; font-size: 13px;">Nama Item</th>
+                                <th style="padding: 8px; text-align: left; border: 1px solid #ddd; font-size: 13px;">Tipe</th>
+                                <th style="padding: 8px; text-align: center; border: 1px solid #ddd; font-size: 13px;">Qty</th>
+                                <th style="padding: 8px; text-align: right; border: 1px solid #ddd; font-size: 13px;">Harga Satuan</th>
+                                <th style="padding: 8px; text-align: right; border: 1px solid #ddd; font-size: 13px;">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @php $itemIndex = 1; @endphp
+                            
+                            {{-- Spare Parts --}}
+                            @if($booking->spareparts && count($booking->spareparts) > 0)
+                                @foreach($booking->spareparts as $sparepart)
+                                <tr style="{{ $itemIndex % 2 == 0 ? 'background-color: #f8f9fa;' : 'background-color: white;' }}">
+                                    <td style="padding: 8px; border: 1px solid #ddd; font-size: 12px;">{{ $itemIndex }}</td>
+                                    <td style="padding: 8px; border: 1px solid #ddd; font-size: 12px;">
+                                        <div style="font-weight: bold;">{{ $sparepart->sparepart_name }}</div>
+                                        @if($sparepart->description)
+                                            <div style="color: #666; font-size: 11px; margin-top: 2px;">{{ $sparepart->description }}</div>
+                                        @endif
+                                    </td>
+                                    <td style="padding: 8px; border: 1px solid #ddd; font-size: 12px;">
+                                        <span style="background-color: #28a745; color: white; padding: 2px 6px; border-radius: 3px; font-size: 10px;">SPARE PART</span>
+                                    </td>
+                                    <td style="padding: 8px; border: 1px solid #ddd; text-align: center; font-size: 12px;">{{ $sparepart->quantity }}</td>
+                                    <td style="padding: 8px; border: 1px solid #ddd; text-align: right; font-size: 12px;">Rp {{ number_format($sparepart->unit_price, 0, ',', '.') }}</td>
+                                    <td style="padding: 8px; border: 1px solid #ddd; text-align: right; font-size: 12px; font-weight: bold;">Rp {{ number_format($sparepart->total_price, 0, ',', '.') }}</td>
+                                </tr>
+                                @php $itemIndex++; @endphp
+                                @endforeach
+                            @endif
+                            
+                            {{-- Inventory Usage --}}
+                            @if($booking->inventoryUsages && count($booking->inventoryUsages) > 0)
+                                @foreach($booking->inventoryUsages as $usage)
+                                @php
+                                    $itemTotal = $usage->quantity_used * ($usage->inventoryItem ? $usage->inventoryItem->unit_price : 0);
+                                @endphp
+                                <tr style="{{ $itemIndex % 2 == 0 ? 'background-color: #f8f9fa;' : 'background-color: white;' }}">
+                                    <td style="padding: 8px; border: 1px solid #ddd; font-size: 12px;">{{ $itemIndex }}</td>
+                                    <td style="padding: 8px; border: 1px solid #ddd; font-size: 12px;">
+                                        <div style="font-weight: bold;">{{ $usage->inventoryItem ? $usage->inventoryItem->name : 'Item tidak ditemukan' }}</div>
+                                        @if($usage->inventoryItem && $usage->inventoryItem->description)
+                                            <div style="color: #666; font-size: 11px; margin-top: 2px;">{{ $usage->inventoryItem->description }}</div>
+                                        @endif
+                                        @if($usage->notes)
+                                            <div style="color: #666; font-size: 11px; margin-top: 2px; font-style: italic;">Catatan: {{ $usage->notes }}</div>
+                                        @endif
+                                    </td>
+                                    <td style="padding: 8px; border: 1px solid #ddd; font-size: 12px;">
+                                        <span style="background-color: #17a2b8; color: white; padding: 2px 6px; border-radius: 3px; font-size: 10px;">INVENTORY</span>
+                                    </td>
+                                    <td style="padding: 8px; border: 1px solid #ddd; text-align: center; font-size: 12px;">{{ $usage->quantity_used }}</td>
+                                    <td style="padding: 8px; border: 1px solid #ddd; text-align: right; font-size: 12px;">Rp {{ number_format($usage->inventoryItem ? $usage->inventoryItem->unit_price : 0, 0, ',', '.') }}</td>
+                                    <td style="padding: 8px; border: 1px solid #ddd; text-align: right; font-size: 12px; font-weight: bold;">Rp {{ number_format($itemTotal, 0, ',', '.') }}</td>
+                                </tr>
+                                @php $itemIndex++; @endphp
+                                @endforeach
+                            @endif
+                        </tbody>
+                        <tfoot>
+                            @php
+                                $totalItemsCost = $sparepartsPrice + $inventoryPrice;
+                            @endphp
+                            <tr style="background-color: #e9ecef; font-weight: bold;">
+                                <td colspan="5" style="padding: 8px; border: 1px solid #ddd; text-align: right; font-size: 12px;">Total Spare Parts & Inventory:</td>
+                                <td style="padding: 8px; border: 1px solid #ddd; text-align: right; font-size: 12px; color: #4e73df;">Rp {{ number_format($totalItemsCost, 0, ',', '.') }}</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+                @endif
+                
+                @if($deliveryFee > 0)
+                <div class="subtotal-row">
+                    <span class="subtotal-label">{{ $booking->service_type === 'pickup' ? 'Pickup & Delivery Fee' : 'On-site Service Fee' }}:</span>
+                    <span>Rp {{ number_format($deliveryFee, 0, ',', '.') }}</span>
+                </div>
+                @endif
+                
+                @if($emergencyFee > 0)
+                <div class="subtotal-row">
+                    <span class="subtotal-label">Emergency Service Fee:</span>
+                    <span>Rp {{ number_format($emergencyFee, 0, ',', '.') }}</span>
+                </div>
+                @endif
+                
+                @if($loyaltyDiscount > 0)
+                <div class="subtotal-row">
+                    <span class="subtotal-label">Loyalty Points Discount:</span>
+                    <span style="color: #e74a3b;">-Rp {{ number_format($loyaltyDiscount, 0, ',', '.') }}</span>
+                </div>
+                @endif
+            </div>
+            
             <div class="subtotal-row">
                 <span class="subtotal-label">Subtotal:</span>
-                <span>Rp {{ number_format($booking->total_price, 0, ',', '.') }}</span>
+                <span>Rp {{ number_format($subtotal, 0, ',', '.') }}</span>
             </div>
             <div class="tax-row">
                 <span class="tax-label">Tax (0%):</span>
@@ -326,25 +550,122 @@
             </div>
         </div>
         
+        <!-- Spare Parts Detail Section (if any) -->
+        @if($booking->spareparts && count($booking->spareparts) > 0)
+        <div style="margin-top: 30px; padding: 15px; background-color: #f8f9fa; border-radius: 5px;">
+            <div style="font-weight: bold; color: #4e73df; margin-bottom: 15px; font-size: 16px;">📋 Spare Parts Details</div>
+            
+            @foreach($booking->spareparts as $index => $sparepart)
+            <div style="margin-bottom: 10px; padding: 10px; background-color: white; border-radius: 3px; border-left: 4px solid #4e73df;">
+                <div style="font-weight: bold;">{{ $index + 1 }}. {{ $sparepart->sparepart_name }}</div>
+                @if($sparepart->description)
+                    <div style="color: #666; font-size: 13px; margin: 5px 0;">{{ $sparepart->description }}</div>
+                @endif
+                <div style="display: flex; justify-content: space-between; margin-top: 5px;">
+                    <span>Quantity: <strong>{{ $sparepart->quantity }}</strong></span>
+                    <span>Unit Price: <strong>Rp {{ number_format($sparepart->unit_price, 0, ',', '.') }}</strong></span>
+                    <span>Total: <strong>Rp {{ number_format($sparepart->total_price, 0, ',', '.') }}</strong></span>
+                </div>
+                @if($sparepart->used_at)
+                    <div style="color: #666; font-size: 12px; margin-top: 5px;">Used on: {{ $sparepart->used_at->format('d M Y H:i') }}</div>
+                @endif
+            </div>
+            @endforeach
+            
+            <div style="margin-top: 15px; padding-top: 10px; border-top: 1px solid #ddd; text-align: right;">
+                <strong>Total Spare Parts Cost: Rp {{ number_format($sparepartsPrice, 0, ',', '.') }}</strong>
+            </div>
+        </div>
+        @endif
+        
         <!-- Payment Info -->
         <div class="payment-info">
             <div class="payment-title">Payment Information</div>
-            <p>Please make payment to the following bank account:</p>
-            <p><strong>Bank:</strong> Bank Central Asia (BCA)</p>
-            <p><strong>Account Number:</strong> 1234567890</p>
-            <p><strong>Account Name:</strong> PT Service App Indonesia</p>
+            
+            @if($booking->ewallet_type)
+                <!-- E-Wallet Payment -->
+                <p><strong>Payment Method:</strong> 
+                    <span class="payment-method">{{ strtoupper($booking->ewallet_type) }}</span>
+                </p>
+                
+                @switch($booking->ewallet_type)
+                    @case('ovo')
+                        <p><strong>OVO Number:</strong> 0812-3456-7890</p>
+                        <p><strong>Account Name:</strong> PT Service App Indonesia</p>
+                        @break
+                    @case('dana')
+                        <p><strong>DANA Number:</strong> 0812-3456-7890</p>
+                        <p><strong>Account Name:</strong> PT Service App Indonesia</p>
+                        @break
+                    @case('gopay')
+                        <p><strong>GoPay Number:</strong> 0812-3456-7890</p>
+                        <p><strong>Account Name:</strong> PT Service App Indonesia</p>
+                        @break
+                    @case('spay')
+                        <p><strong>ShopeePay Number:</strong> 0812-3456-7890</p>
+                        <p><strong>Account Name:</strong> PT Service App Indonesia</p>
+                        @break
+                @endswitch
+                
+                <p><strong>Instructions:</strong></p>
+                <ol>
+                    <li>Open your {{ strtoupper($booking->ewallet_type) }} app</li>
+                    <li>Select "Transfer" or "Send Money"</li>
+                    <li>Enter the number above</li>
+                    <li>Enter amount: <strong>Rp {{ number_format($booking->total_price, 0, ',', '.') }}</strong></li>
+                    <li>Add note: "Invoice #INV-{{ str_pad($booking->id, 5, '0', STR_PAD_LEFT) }}"</li>
+                    <li>Complete the payment</li>
+                    <li>Upload payment proof in your booking page</li>
+                </ol>
+            @else
+                <!-- Bank Transfer (Default) -->
+                <p><strong>Payment Method:</strong> <span class="payment-method">Bank Transfer</span></p>
+                <p><strong>Bank:</strong> Bank Central Asia (BCA)</p>
+                <p><strong>Account Number:</strong> 1234567890</p>
+                <p><strong>Account Name:</strong> PT Service App Indonesia</p>
+                
+                <p><strong>Instructions:</strong></p>
+                <ol>
+                    <li>Transfer to the bank account above</li>
+                    <li>Amount: <strong>Rp {{ number_format($booking->total_price, 0, ',', '.') }}</strong></li>
+                    <li>Add note: "Invoice #INV-{{ str_pad($booking->id, 5, '0', STR_PAD_LEFT) }}"</li>
+                    <li>Upload payment proof in your booking page</li>
+                </ol>
+            @endif
             
             @if($booking->payment_proof)
-                <p><strong>Payment Status:</strong> <span style="color: #1cc88a; font-weight: bold;">Payment Proof Uploaded</span></p>
+                <p><strong>Payment Status:</strong> <span style="color: #1cc88a; font-weight: bold;">✓ Payment Proof Uploaded</span></p>
+                @if($booking->is_paid)
+                    <p><strong>Verification Status:</strong> <span style="color: #1cc88a; font-weight: bold;">✓ Payment Verified</span></p>
+                @else
+                    <p><strong>Verification Status:</strong> <span style="color: #f6c23e; font-weight: bold;">⏳ Awaiting Verification</span></p>
+                @endif
             @else
-                <p><strong>Payment Status:</strong> <span style="color: #e74a3b; font-weight: bold;">Awaiting Payment</span></p>
+                <p><strong>Payment Status:</strong> <span style="color: #e74a3b; font-weight: bold;">✗ Awaiting Payment</span></p>
             @endif
         </div>
+        
+        <!-- Spare Parts Summary (if any) -->
+        @if($booking->spareparts && count($booking->spareparts) > 0)
+        <div class="mb-20">
+            <div class="info-title">Spare Parts Used</div>
+            @foreach($booking->spareparts as $sparepart)
+                <div class="info-content">
+                    <strong>{{ $sparepart->sparepart_name }}</strong> 
+                    - Qty: {{ $sparepart->quantity }} 
+                    - Rp {{ number_format($sparepart->total_price, 0, ',', '.') }}
+                    @if($sparepart->description)
+                        <br><small style="color: #666; margin-left: 20px;">{{ $sparepart->description }}</small>
+                    @endif
+                </div>
+            @endforeach
+        </div>
+        @endif
         
         <!-- Notes -->
         @if($booking->description)
         <div class="mb-20">
-            <div class="info-title">Notes</div>
+            <div class="info-title">Service Notes</div>
             <p>{{ $booking->description }}</p>
         </div>
         @endif

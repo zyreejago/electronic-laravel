@@ -167,6 +167,16 @@
                                 </div>
                             @endif
 
+                            <!-- Inventory/Spare Parts Cost -->
+                            @if($booking->inventoryUsages->count() > 0)
+                                <div class="mb-3">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span class="text-muted">Spare Parts Cost:</span>
+                                        <span class="fw-bold">Rp {{ number_format($booking->inventory_cost, 0, ',', '.') }}</span>
+                                    </div>
+                                </div>
+                            @endif
+
                             <!-- Delivery Fee -->
                             @if($booking->service_type === 'pickup' || $booking->service_type === 'onsite')
                                 <div class="mb-3">
@@ -195,6 +205,58 @@
                                 <span class="fw-bold fs-5">Rp {{ number_format($booking->total_price, 0, ',', '.') }}</span>
                             </div>
                         </div>
+
+                        <!-- Inventory Usage Section -->
+                        @if($booking->inventoryUsages->count() > 0)
+                            <hr class="my-4">
+                            
+                            <div class="d-flex align-items-center mb-3">
+                                <div class="rounded-circle bg-warning bg-opacity-10 text-warning p-2 me-3" 
+                                     style="width: 45px; height: 45px; display: flex; align-items: center; justify-content: center;">
+                                    <i class="fas fa-boxes fa-lg"></i>
+                                </div>
+                                <div>
+                                    <h6 class="fw-bold mb-0">Spare Parts yang Digunakan</h6>
+                                    <small class="text-muted">Inventory items used during service</small>
+                                </div>
+                            </div>
+                            
+                            <div class="ps-5 mb-4">
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>Item Name</th>
+                                                <th>Quantity</th>
+                                                <th>Unit Price</th>
+                                                <th>Total Price</th>
+                                                <th>Technician</th>
+                                                <th>Used At</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach($booking->inventoryUsages as $usage)
+                                                <tr>
+                                                    <td>{{ $usage->inventoryItem ? $usage->inventoryItem->name : 'Item Tidak Ditemukan' }}</td>
+                                                    <td>{{ $usage->quantity_used }}</td>
+                                                    <td>Rp {{ $usage->inventoryItem ? number_format($usage->inventoryItem->unit_price, 0, ',', '.') : '0' }}</td>
+                                                    <td>Rp {{ $usage->inventoryItem ? number_format($usage->quantity_used * $usage->inventoryItem->unit_price, 0, ',', '.') : '0' }}</td>
+                                                    <td>{{ $usage->technician ? $usage->technician->user->name : 'N/A' }}</td>
+                                                    <td>{{ $usage->used_at ? $usage->used_at->format('d M Y H:i') : 'N/A' }}</td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                        <tfoot class="table-light">
+                                            <tr>
+                                                <td colspan="3" class="fw-bold">Total Biaya Spare Parts:</td>
+                                                <td class="fw-bold">Rp {{ number_format($booking->inventory_cost, 0, ',', '.') }}</td>
+                                                <td colspan="2"></td>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+                        @endif
 
                         <hr class="my-4">
 
@@ -630,13 +692,13 @@
                     </div>
                 @endif
 
-                @if($booking->is_paid)
+                {{-- @if($booking->is_paid) --}}
                     <div class="d-grid mb-4">
                         <a href="{{ route('bookings.invoice', $booking) }}" class="btn btn-outline-primary btn-lg" target="_blank">
                             <i class="fas fa-file-invoice me-2"></i>Lihat Invoice
                         </a>
                     </div>
-                @endif
+                {{-- @endif --}}
             </div>
         </div>
     </div>

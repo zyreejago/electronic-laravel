@@ -71,4 +71,19 @@ class BookingPolicy
     {
         return $user->role === 'admin';
     }
-} 
+
+    public function viewInvoice(User $user, Booking $booking)
+    {
+        // User bisa melihat invoice booking mereka sendiri yang sudah dibayar
+        if ($user->id === $booking->user_id && $booking->is_paid) {
+            return true;
+        }
+    
+        // Admin bisa melihat semua invoice
+        if ($user->role === 'admin') {
+            return true;
+        }
+    
+        return false;
+    }
+}

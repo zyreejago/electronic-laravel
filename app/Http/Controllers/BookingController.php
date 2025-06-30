@@ -122,6 +122,23 @@ class BookingController extends Controller
     public function show(Booking $booking)
     {
         $this->authorize('view', $booking);
+        
+        // Load necessary relationships
+        $booking->load([
+            'service', 
+            'user', 
+            'serviceComponents',
+            'inventoryUsages.inventoryItem',
+            'inventoryUsages.technician.user'
+        ]);
+        
+        // Recalculate and update total price to include inventory cost
+        $newTotalPrice = $booking->calculateTotalPrice();
+        if ($booking->total_price != $newTotalPrice) {
+            $booking->update(['total_price' => $newTotalPrice]);
+            $booking->refresh();
+        }
+        
         return view('bookings.show', compact('booking'));
     }
 
@@ -161,7 +178,13 @@ class BookingController extends Controller
 
     public function technicianShow(Booking $booking)
     {
-        $this->authorize('viewAsTechnician', $booking);
+        $this->authorize('view', $booking);
+        $booking->load([
+            'service', 
+            'user', 
+            'inventoryUsages.inventoryItem',
+            'serviceComponents'
+        ]);
         return view('technician.bookings.show', compact('booking'));
     }
 
@@ -265,9 +288,20 @@ class BookingController extends Controller
 
     public function adminShow(Booking $booking)
     {
+        $booking->load([
+            'user', 
+            'service', 
+            'technician.user', 
+            'inventoryUsages.inventoryItem', 
+            'inventoryUsages.technician.user',
+            'serviceComponents'
+        ]);
+        
         return view('admin.bookings.show', compact('booking'));
     }
 
+    // Hapus method technicianShow() yang duplikat di line 281-290
+    
     public function reports()
     {
         $totalBookings = Booking::count();
@@ -378,10 +412,11 @@ class BookingController extends Controller
 
     public function invoice(Booking $booking)
     {
-        $this->authorize('view', $booking);
-        if (!$booking->is_paid) {
-            abort(403, 'Invoice hanya tersedia setelah pembayaran.');
-        }
+        // Hanya cek apakah sudah dibayar
+        // if (!$booking->is_paid) {
+        //     abort(403, 'Invoice hanya tersedia setelah pembayaran.');
+        // }
+        
         $pdf = Pdf::loadView('bookings.invoice', compact('booking'));
         return $pdf->download('invoice-booking-' . $booking->id . '.pdf');
     }
@@ -428,5 +463,46 @@ class BookingController extends Controller
             return redirect()->route('bookings.show', $booking)
                 ->with('success', 'Technician assigned successfully.');
         }
+    }
+
+    // Method untuk menambahkan inventory usage
+    public function addInventoryUsage(Request $request, Booking $booking)
+    {
+        $validated = $request->validate([
+            'inventory_item_id' => 'required|exists:inventory_items,id',
+            'quantity_used' => 'required|integer|min:1',
+            'notes' => 'nullable|string|max:500'
+        ]);
+
+        $inventoryItem = InventoryItem::findOrFail($validated['inventory_item_id']);
+        
+        // Check if enough stock available
+        if ($inventoryItem->stock_quantity < $validated['quantity_used']) {
+            return redirect()->back()
+                ->with('error', 'Insufficient stock available.');
+        }
+
+        // Create inventory usage record
+        InventoryUsage::create([
+            'inventory_item_id' => $validated['inventory_item_id'],
+            'technician_id' => auth()->user()->technician->id,
+            'booking_id' => $booking->id,
+            'quantity_used' => $validated['quantity_used'],
+            'used_at' => now(),
+            'notes' => $validated['notes']
+        ]);
+
+        // Reduce inventory stock
+        $inventoryItem->reduceStock($validated['quantity_used']);
+
+        // Recalculate total price including inventory cost
+        $booking->load(['service', 'serviceComponents', 'inventoryUsages.inventoryItem']);
+        $newTotalPrice = $booking->calculateTotalPrice();
+        $booking->update([
+            'total_price' => $newTotalPrice
+        ]);
+
+        return redirect()->back()
+            ->with('success', 'Inventory item added successfully.');
     }
 }

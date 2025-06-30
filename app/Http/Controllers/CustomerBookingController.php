@@ -36,12 +36,19 @@ class CustomerBookingController extends Controller
         
         $booking->load([
             'service',
-            'technician.user',
+            'technician.user', 
             'serviceComponents',
+            'inventoryUsages.inventoryItem',
+            'inventoryUsages.technician.user',
             'additionalWorkRequests.technician.user',
             'progressNotes',
             'rating'
         ]);
+        
+        // Hapus baris ini:
+        // \Log::info('Booking ID: ' . $booking->id);
+        // \Log::info('Inventory Usages Count: ' . $booking->inventoryUsages->count());
+        // \Log::info('Inventory Cost: ' . $booking->inventory_cost);
         
         return view('customer.bookings.show', compact('booking'));
     }

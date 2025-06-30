@@ -9,8 +9,9 @@ use App\Http\Controllers\ExportController;
 Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/bookings/{booking}/handover-receipt', [PDFController::class, 'generateHandoverReceipt'])
         ->name('bookings.handover-receipt');
-    Route::get('/bookings/{booking}/invoice', [PDFController::class, 'generateInvoice'])
-        ->name('bookings.invoice');
+    // Hapus atau comment line ini:
+    // Route::get('/bookings/{booking}/invoice', [PDFController::class, 'generateInvoice'])
+    //     ->name('bookings.invoice');
     Route::get('/reports/monthly-pdf', [PDFController::class, 'generateMonthlyReport'])
         ->name('reports.monthly-pdf');
     

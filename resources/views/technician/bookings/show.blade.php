@@ -1,16 +1,16 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Booking Detail') }}
-        </h2>
-        <a href="{{ route('technician.bookings.index') }}" class="btn btn-outline-success btn-lg shadow-sm">
-            <i class="fas fa-arrow-left me-2"></i>Back to Bookings
-        </a>
-    </div>
-
     <div class="container py-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+                {{ __('Booking Detail') }}
+            </h2>
+            <a href="{{ route('technician.bookings.index') }}" class="btn btn-outline-success btn-lg shadow-sm">
+                <i class="fas fa-arrow-left me-2"></i>Back to Bookings
+            </a>
+        </div>
+
         <!-- Booking Status Banner -->
         <div class="card border-0 shadow mb-4 rounded-4 overflow-hidden">
             <div class="card-body p-0">
@@ -20,7 +20,7 @@
                        ($booking->status === 'completed' ? '#1cc88a, #13855c' : '#e74a3b, #be2617')) }});">
                     <div class="rounded-circle bg-white p-3 me-4">
                         <i class="fas fa-{{ $booking->status === 'pending' ? 'clock' : 
-                                          ($booking->status === 'in_progress' ? 'spinner' : 
+                                          ($booking->status === 'in_progress' ? 'spinner fa-spin' : 
                                           ($booking->status === 'completed' ? 'check-double' : 'times-circle')) }} fa-2x" 
                            style="color: {{ $booking->status === 'pending' ? '#dda20a' : 
                                           ($booking->status === 'in_progress' ? '#224abe' : 
@@ -29,7 +29,7 @@
                     <div class="text-white">
                         <h4 class="fw-bold mb-1">Booking #{{ $booking->id }}</h4>
                         <div class="fs-5">
-                            Status: <span class="fw-bold">{{ ucfirst($booking->status) }}</span>
+                            Status: <span class="fw-bold">{{ ucfirst(str_replace('_', ' ', $booking->status)) }}</span>
                         </div>
                     </div>
                     <div class="ms-auto">
@@ -111,13 +111,31 @@
                                         <span class="fw-bold ms-2">{{ $booking->service->name }}</span>
                                     </div>
                                     <div class="mb-2">
-                                        <span class="text-muted">Price:</span>
-                                        <span class="fw-bold ms-2">Rp {{ number_format($booking->total_price, 0, ',', '.') }}</span>
+                                        <span class="text-muted">Base Price:</span>
+                                        <span class="fw-bold ms-2">Rp {{ number_format($booking->service->price ?? 0, 0, ',', '.') }}</span>
+                                    </div>
+                                    <div class="mb-2">
+                                        <span class="text-muted">Total Price:</span>
+                                        <span class="fw-bold ms-2 text-primary h6">Rp {{ number_format($booking->total_price, 0, ',', '.') }}</span>
+                                    </div>
+                                    <div class="mb-2">
+                                        <span class="text-muted">Duration:</span>
+                                        <span class="fw-bold ms-2">{{ $booking->service->duration ?? 0 }} minutes</span>
                                     </div>
                                     <div>
                                         <span class="text-muted">Service Type:</span>
                                         <span class="fw-bold ms-2">{{ ucfirst($booking->service_type) }}</span>
                                     </div>
+                                    @if($booking->is_emergency)
+                                        <div class="mt-2">
+                                            <span class="badge bg-danger"><i class="fas fa-bolt me-1"></i>Emergency Service (+Rp 100,000)</span>
+                                        </div>
+                                    @endif
+                                    @if(in_array($booking->service_type, ['pickup', 'onsite']))
+                                        <div class="mt-2">
+                                            <span class="badge bg-info">{{ ucfirst($booking->service_type) }} Service (+Rp 50,000)</span>
+                                        </div>
+                                    @endif
                                 </div>
                             </div>
                         </div>
@@ -247,6 +265,49 @@
                     </div>
                 </div>
 
+                <!-- Inventory Usage -->
+                <div class="card border-0 shadow rounded-4 overflow-hidden mb-4">
+                    <div class="card-header p-0">
+                        <div style="background: linear-gradient(90deg, #f6c23e, #dda20a);" class="text-white p-4">
+                            <h5 class="card-title mb-0 fw-bold">
+                                <i class="fas fa-boxes me-2"></i>Inventory Usage
+                            </h5>
+                        </div>
+                    </div>
+                    <div class="card-body p-4">
+                        <!-- Quick Add Inventory -->
+                        <div class="mb-4">
+                            <button type="button" class="btn btn-warning btn-lg w-100" data-bs-toggle="modal" data-bs-target="#inventoryModal">
+                                <i class="fas fa-plus me-2"></i>Add Inventory Item
+                            </button>
+                        </div>
+
+                        <!-- Used Items List -->
+                        @if($booking->inventoryUsages && $booking->inventoryUsages->count() > 0)
+                            <div class="mb-3">
+                                <h6 class="fw-bold text-muted mb-3">Items Used:</h6>
+                                @foreach($booking->inventoryUsages as $usage)
+                                    <div class="d-flex justify-content-between align-items-center p-3 mb-2 bg-light rounded-3">
+                                        <div>
+                                            <div class="fw-bold">{{ $usage->inventoryItem->name }}</div>
+                                            <small class="text-muted">Qty: {{ $usage->quantity_used }} | {{ $usage->used_at->format('d M Y H:i') }}</small>
+                                            @if($usage->notes)
+                                                <div class="text-muted small mt-1">{{ $usage->notes }}</div>
+                                            @endif
+                                        </div>
+                                        <span class="badge bg-success">Used</span>
+                                    </div>
+                                @endforeach
+                            </div>
+                        @else
+                            <div class="text-center py-3">
+                                <i class="fas fa-box-open fa-3x text-muted mb-3"></i>
+                                <p class="text-muted mb-0">No inventory items used yet for this booking.</p>
+                            </div>
+                        @endif
+                    </div>
+                </div>
+
                 <!-- Service Checklist -->
                 <div class="card border-0 shadow rounded-4 overflow-hidden mb-4">
                     <div class="card-header p-0">
@@ -296,108 +357,96 @@
                         </div>
                     </div>
                 </div>
-
-                <!-- Required Parts -->
-                <!-- <div class="card border-0 shadow rounded-4 overflow-hidden">
-                    <div class="card-header p-0">
-                        <div style="background: linear-gradient(90deg, #f6c23e, #dda20a);" class="text-white p-4">
-                            <h5 class="card-title mb-0 fw-bold">
-                                <i class="fas fa-tools me-2"></i>Required Parts
-                            </h5>
-                        </div>
-                    </div>
-                    <div class="card-body p-4">
-                        <div class="mb-3">
-                            <div class="input-group">
-                                <input type="text" class="form-control border-0 shadow-sm" placeholder="Add a required part..." id="newPartInput">
-                                <button class="btn btn-warning" type="button" id="addPartBtn">
-                                    <i class="fas fa-plus"></i>
-                                </button>
-                            </div>
-                        </div>
-                        
-                        <ul class="list-group" id="partsList">
-                            <!-- Parts will be added here dynamically -->
-                        <!-- </ul>
-                        
-                        <div class="text-center py-3" id="noPartsMessage">
-                            <p class="text-muted mb-0">No parts added yet. Add parts that are required for this service.</p>
-                        </div>
-                    </div> -->
-                <!-- </div> --> 
             </div>
         </div>
     </div>
 
-    @push('scripts')
-    <style>
-        .dropdown-menu { z-index: 1055 !important; }
-    </style>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Parts list functionality
-            const newPartInput = document.getElementById('newPartInput');
-            const addPartBtn = document.getElementById('addPartBtn');
-            const partsList = document.getElementById('partsList');
-            const noPartsMessage = document.getElementById('noPartsMessage');
-            
-            addPartBtn.addEventListener('click', function() {
-                const partName = newPartInput.value.trim();
-                if (partName) {
-                    // Hide the "no parts" message
-                    noPartsMessage.style.display = 'none';
-                    
-                    // Create new list item
-                    const li = document.createElement('li');
-                    li.className = 'list-group-item d-flex justify-content-between align-items-center';
-                    
-                    // Part name with checkbox
-                    const partDiv = document.createElement('div');
-                    partDiv.className = 'd-flex align-items-center';
-                    
-                    const checkbox = document.createElement('input');
-                    checkbox.type = 'checkbox';
-                    checkbox.className = 'form-check-input me-2';
-                    
-                    const partText = document.createElement('span');
-                    partText.textContent = partName;
-                    
-                    partDiv.appendChild(checkbox);
-                    partDiv.appendChild(partText);
-                    
-                    // Delete button
-                    const deleteBtn = document.createElement('button');
-                    deleteBtn.className = 'btn btn-sm btn-outline-danger';
-                    deleteBtn.innerHTML = '<i class="fas fa-trash"></i>';
-                    deleteBtn.addEventListener('click', function() {
-                        li.remove();
-                        if (partsList.children.length === 0) {
-                            noPartsMessage.style.display = 'block';
-                        }
-                    });
-                    
-                    li.appendChild(partDiv);
-                    li.appendChild(deleteBtn);
-                    
-                    partsList.appendChild(li);
-                    newPartInput.value = '';
-                }
-            });
-            
-            // Allow pressing Enter to add a part
-            newPartInput.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-                    addPartBtn.click();
-                }
-            });
-        });
-    </script>
-    @endpush
-
-    <script>
-    function updateProgressValue(value) {
-        document.getElementById('progressValue').textContent = value + '%';
-    }
-    </script>
+    <!-- Inventory Usage Modal -->
+    <div class="modal fade" id="inventoryModal" tabindex="-1" aria-labelledby="inventoryModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header" style="background: linear-gradient(90deg, #f6c23e, #dda20a);">
+                    <h5 class="modal-title text-white fw-bold" id="inventoryModalLabel">
+                        <i class="fas fa-boxes me-2"></i>Use Inventory Item
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="{{ route('technician.inventory.use') }}" method="POST">
+                    @csrf
+                    <input type="hidden" name="booking_id" value="{{ $booking->id }}">
+                    <div class="modal-body">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="inventory_item_id" class="form-label fw-bold">Select Item</label>
+                                <select name="inventory_item_id" id="inventory_item_id" class="form-select" required>
+                                    <option value="">Choose inventory item...</option>
+                                    @php
+                                        $availableItems = \App\Models\InventoryItem::where('status', 'Tersedia')
+                                            ->where('stock_quantity', '>', 0)
+                                            ->get();
+                                    @endphp
+                                    @foreach($availableItems as $item)
+                                        <option value="{{ $item->id }}" data-stock="{{ $item->stock_quantity }}">
+                                            {{ $item->name }} (Stock: {{ $item->stock_quantity }})
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="quantity_used" class="form-label fw-bold">Quantity Used</label>
+                                <input type="number" name="quantity_used" id="quantity_used" class="form-control" min="1" required>
+                                <div class="form-text">Available stock will be shown after selecting item</div>
+                            </div>
+                            <div class="col-12">
+                                <label for="usage_notes" class="form-label fw-bold">Notes (Optional)</label>
+                                <textarea name="notes" id="usage_notes" class="form-control" rows="3" placeholder="Add notes about the usage..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            <i class="fas fa-times me-2"></i>Cancel
+                        </button>
+                        <button type="submit" class="btn btn-warning">
+                            <i class="fas fa-check me-2"></i>Use Item
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 @endsection
+
+@push('styles')
+<style>
+    .dropdown-menu { 
+        z-index: 1055 !important; 
+    }
+    
+    .fa-spin {
+        animation: fa-spin 2s infinite linear;
+    }
+</style>
+@endpush
+
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Update max quantity based on selected item
+        const inventorySelect = document.getElementById('inventory_item_id');
+        const quantityInput = document.getElementById('quantity_used');
+        
+        if (inventorySelect && quantityInput) {
+            inventorySelect.addEventListener('change', function() {
+                const selectedOption = this.options[this.selectedIndex];
+                const stock = selectedOption.getAttribute('data-stock');
+                
+                if (stock) {
+                    quantityInput.max = stock;
+                    quantityInput.placeholder = `Max: ${stock}`;
+                }
+            });
+        }
+    });
+</script>
+@endpush

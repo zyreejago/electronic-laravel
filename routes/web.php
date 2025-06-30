@@ -16,6 +16,7 @@ use App\Http\Controllers\CustomerDashboardController;
 use App\Http\Controllers\CustomerBookingController; // Add this line too
 use App\Http\Controllers\InspectionController;
 use App\Http\Controllers\TechnicianBookingController;
+use App\Http\Controllers\Admin\InventoryController;
 use Illuminate\Support\Facades\Auth;
 
 
@@ -113,6 +114,12 @@ Route::middleware(['auth', 'role:technician'])->group(function () {
         Route::post('/bookings/{booking}/add-progress-note', [TechnicianBookingController::class, 'addProgressNote'])
             ->name('bookings.add-progress-note');
     });
+    
+    // Inventory routes for technician
+    Route::prefix('technician')->name('technician.')->group(function () {
+        Route::get('/inventory', [\App\Http\Controllers\Technician\InventoryController::class, 'index'])->name('inventory.index');
+        Route::post('/inventory/use', [\App\Http\Controllers\Technician\InventoryController::class, 'useItem'])->name('inventory.use');
+    });
 });
 
 // Admin Routes
@@ -142,7 +149,21 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
         // Di dalam group admin
         Route::get('inspections/{booking}', [InspectionController::class, 'show'])->name('inspections.show');
         Route::put('inspections/{booking}', [InspectionController::class, 'update'])->name('inspections.update');
-});
+        
+        // Inventory Management Routes
+        Route::prefix('inventory')->name('inventory.')->group(function () {
+            Route::get('/', [InventoryController::class, 'index'])->name('index');
+            Route::get('/create', [InventoryController::class, 'create'])->name('create');
+            Route::get('/monthly-report', [InventoryController::class, 'monthlyReport'])->name('monthly-report');
+            Route::get('/reports/export', [InventoryController::class, 'exportReport'])->name('export-report');
+            Route::post('/', [InventoryController::class, 'store'])->name('store');
+            Route::get('/{inventoryItem}', [InventoryController::class, 'show'])->name('show');
+            Route::get('/{inventoryItem}/edit', [InventoryController::class, 'edit'])->name('edit');
+            Route::put('/{inventoryItem}', [InventoryController::class, 'update'])->name('update');
+            Route::delete('/{inventoryItem}', [InventoryController::class, 'destroy'])->name('destroy');
+            Route::post('/{inventoryItem}/restock', [InventoryController::class, 'restock'])->name('restock');
+        });
+    });
 });
 
 // Test WhatsApp Notification
@@ -176,3 +197,8 @@ Route::get('/test-whatsapp/{phone?}', function ($phone = null) {
 });
 
 require __DIR__.'/pdf.php';
+
+// Tambahkan route untuk inventory usage
+Route::post('/bookings/{booking}/inventory-usage', [BookingController::class, 'addInventoryUsage'])
+    ->name('bookings.add-inventory-usage')
+    ->middleware('auth');
