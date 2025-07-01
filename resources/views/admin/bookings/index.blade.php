@@ -4,7 +4,7 @@
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 {{ __('Manage Bookings') }}
             </h2>
-            <a href="{{ route('bookings.create') }}" class="btn btn-primary btn-lg shadow-sm">
+            <a href="{{ route('admin.bookings.create') }}" class="btn btn-primary btn-lg shadow-sm">
                 <i class="fas fa-plus-circle me-2"></i>New Booking
             </a>
         </div>

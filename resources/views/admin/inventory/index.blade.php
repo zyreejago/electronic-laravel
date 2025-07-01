@@ -63,7 +63,7 @@
                         <thead class="bg-light">
                             <tr>
                                 <th class="border-0 text-uppercase small fw-bold p-3">BARANG</th>
-                                <th class="border-0 text-uppercase small fw-bold p-3">STOK</th>
+                                <th class="border-0 text-uppercase small fw-bold p-3">STOK MINIM</th>
                                 <th class="border-0 text-uppercase small fw-bold p-3">HARGA</th>
                                 <th class="border-0 text-uppercase small fw-bold p-3">KONDISI</th>
                                 <th class="border-0 text-uppercase small fw-bold p-3">STATUS</th>
@@ -88,7 +88,7 @@
                                     <td class="p-3">
                                         <div class="d-flex align-items-center">
                                             <span class="fw-bold {{ $item->isLowStock() ? 'text-warning' : 'text-success' }}">{{ $item->current_stock }}</span>
-                                            <small class="text-muted ms-1">/ min: {{ $item->minimum_stock }}</small>
+                                            <small class="text-muted ms-1">{{ $item->minimum_stock }}</small>
                                         </div>
                                         @if($item->isLowStock())
                                             <small class="text-warning"><i class="fas fa-exclamation-triangle me-1"></i>Stok Rendah</small>

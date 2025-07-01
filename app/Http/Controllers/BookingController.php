@@ -70,9 +70,18 @@ class BookingController extends Controller
      */
     public function create()
     {
+        $this->authorize('create', Booking::class); // SUDAH ADA DI BARIS 73
+        
         $services = Service::where('is_available', true)->get();
         $technicians = Technician::where('is_available', true)->get();
         $components = \App\Models\ServiceComponent::where('is_available', true)->get();
+        
+        // Untuk admin, tambahkan daftar users
+        if (auth()->user()->role === 'admin') {
+            $users = \App\Models\User::where('role', 'user')->get();
+            return view('admin.bookings.create', compact('services', 'technicians', 'components', 'users'));
+        }
+        
         return view('bookings.create', compact('services', 'technicians', 'components'));
     }
 
@@ -81,6 +90,8 @@ class BookingController extends Controller
      */
     public function store(Request $request)
     {
+        $this->authorize('store', Booking::class);
+        
         $validated = $request->validate([
             'service_id' => 'required|exists:services,id',
             'technician_id' => 'required|exists:technicians,id',
@@ -88,9 +99,18 @@ class BookingController extends Controller
             'service_type' => 'required|in:pickup,dropoff,onsite',
             'address' => 'required_if:service_type,pickup,onsite|nullable|string',
             'scheduled_at' => 'required|date|after:now',
+            'user_id' => 'required_if:role,admin|exists:users,id',
         ]);
-
-        $validated['user_id'] = auth()->id();
+    
+        // Jika admin yang membuat, gunakan user_id dari form
+        if (auth()->user()->role === 'admin') {
+            $validated['user_id'] = $request->user_id;
+        } else {
+            $validated['user_id'] = auth()->id();
+        }
+        
+        // HAPUS BARIS INI: $validated['user_id'] = auth()->id();
+        
         $validated['status'] = 'pending';
         $validated['is_emergency'] = $request->has('is_emergency');
         $validated['emergency_fee'] = $validated['is_emergency'] ? 100000 : 0;
@@ -465,7 +485,7 @@ class BookingController extends Controller
         }
     }
 
-    // Method untuk menambahkan inventory usage
+    // Di dalam method addInventoryUsage
     public function addInventoryUsage(Request $request, Booking $booking)
     {
         $validated = $request->validate([
@@ -484,25 +504,19 @@ class BookingController extends Controller
 
         // Create inventory usage record
         InventoryUsage::create([
-            'inventory_item_id' => $validated['inventory_item_id'],
+            'inventory_item_id' => $request->inventory_item_id,
             'technician_id' => auth()->user()->technician->id,
             'booking_id' => $booking->id,
-            'quantity_used' => $validated['quantity_used'],
+            'quantity_used' => $request->quantity_used,
             'used_at' => now(),
-            'notes' => $validated['notes']
+            'notes' => $request->notes,
+            'reason' => $request->reason, // Alasan mengapa perlu spare part ini
+            'status' => 'pending_approval' // Set status pending untuk approval user
         ]);
-
-        // Reduce inventory stock
-        $inventoryItem->reduceStock($validated['quantity_used']);
-
-        // Recalculate total price including inventory cost
-        $booking->load(['service', 'serviceComponents', 'inventoryUsages.inventoryItem']);
-        $newTotalPrice = $booking->calculateTotalPrice();
-        $booking->update([
-            'total_price' => $newTotalPrice
-        ]);
-
-        return redirect()->back()
-            ->with('success', 'Inventory item added successfully.');
+        
+        // Jangan update inventory_cost dan total_price di sini
+        // Biarkan sampai user approve
+        
+        return redirect()->back()->with('success', 'Permintaan penggunaan spare part telah dikirim untuk persetujuan customer.');
     }
 }

@@ -41,7 +41,10 @@ class Booking extends Model
         'estimated_work_hours',
         'actual_work_hours',
         'last_customer_update',
-        'requires_customer_approval'
+        'requires_customer_approval',
+        'damage_category',
+'item_condition', 
+'accessories_included',
     ];
 
     protected $casts = [
@@ -147,3 +150,4 @@ class Booking extends Model
         return $basePrice + $componentsPrice + $inventoryPrice + $deliveryFee + $emergencyFee - $loyaltyDiscount;
     }
 }
+

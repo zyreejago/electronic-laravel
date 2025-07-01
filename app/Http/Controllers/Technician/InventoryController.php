@@ -27,7 +27,8 @@ class InventoryController extends Controller
             'inventory_item_id' => 'required|exists:inventory_items,id',
             'booking_id' => 'required|exists:bookings,id',
             'quantity_used' => 'required|integer|min:1',
-            'notes' => 'nullable|string'
+            'notes' => 'nullable|string',
+            'reason' => 'required|string|max:500' // Tambahkan validasi reason
         ]);
 
         // Pastikan user adalah technician dan memiliki data technician
@@ -54,17 +55,22 @@ class InventoryController extends Controller
         // Kurangi stok
         $item->reduceStock($request->quantity_used);
 
-        // Catat penggunaan
+        // Catat penggunaan dengan status pending_approval
         InventoryUsage::create([
             'inventory_item_id' => $item->id,
             'technician_id' => $user->technician->id,
             'booking_id' => $booking->id,
             'quantity_used' => $request->quantity_used,
             'used_at' => now(),
-            'notes' => $request->notes
+            'notes' => $request->notes,
+            'status' => 'pending_approval', // Tambahkan status
+            'reason' => $request->reason // Tambahkan reason
         ]);
 
+        // Jangan update inventory_cost dan total_price di sini
+        // Biarkan sampai user approve
+
         return redirect()->back()
-            ->with('success', 'Barang berhasil digunakan. Stok tersisa: ' . $item->stock_quantity);
+            ->with('success', 'Permintaan penggunaan barang berhasil dikirim dan menunggu persetujuan customer.');
     }
 }

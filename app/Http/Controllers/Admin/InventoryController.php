@@ -161,4 +161,21 @@ class InventoryController extends Controller
         $pdf = PDF::loadView('admin.inventory.report-pdf', compact('usages', 'purchases', 'month'));
         return $pdf->download("inventory-report-{$month}.pdf");
     }
+
+    public function destroy(InventoryItem $inventoryItem)
+    {
+        try {
+            $inventoryItem->usages()->delete();
+            
+            $inventoryItem->purchases()->delete();
+            
+            $inventoryItem->delete();
+    
+            return redirect()->route('admin.inventory.index')
+                ->with('success', 'Item inventory berhasil dihapus.');
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('error', 'Gagal menghapus item inventory. Silakan coba lagi.');
+        }
+    }
 }

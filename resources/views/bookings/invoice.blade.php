@@ -297,8 +297,13 @@
                     <td>{{ $itemNumber++ }}</td>
                     <td>{{ $booking->service->name }}</td>
                     <td>1</td>
-                    <td class="text-right">Rp {{ number_format($booking->service->price, 0, ',', '.') }}</td>
-                    <td class="text-right">Rp {{ number_format($booking->service->price, 0, ',', '.') }}</td>
+                    @if($booking->inspection_completed_at && $booking->estimated_cost)
+                        <td class="text-right">Rp {{ number_format($booking->estimated_cost, 0, ',', '.') }}</td>
+                        <td class="text-right">Rp {{ number_format($booking->estimated_cost, 0, ',', '.') }}</td>
+                    @else
+                        <td class="text-right">Rp {{ number_format($booking->service->price, 0, ',', '.') }}</td>
+                        <td class="text-right">Rp {{ number_format($booking->service->price, 0, ',', '.') }}</td>
+                    @endif
                 </tr>
                 
                 <!-- Service Components -->
@@ -370,10 +375,14 @@
         <!-- Total Section -->
         <div class="total-section">
             @php
-                $servicePrice = $booking->service->price;
+                // Use estimated_cost if inspection is completed, otherwise use service price
+                $servicePrice = ($booking->inspection_completed_at && $booking->estimated_cost) 
+                    ? $booking->estimated_cost 
+                    : $booking->service->price;
+                    
                 $componentsPrice = 0;
                 $sparepartsPrice = 0;
-                $inventoryPrice = 0; // Add this line
+                $inventoryPrice = 0;
                 $deliveryFee = 0;
                 $emergencyFee = 0;
                 $loyaltyDiscount = 0;
@@ -424,6 +433,9 @@
                 <div class="subtotal-row">
                     <span class="subtotal-label">Base Service ({{ $booking->service->name }}):</span>
                     <span>Rp {{ number_format($servicePrice, 0, ',', '.') }}</span>
+                    @if($booking->inspection_completed_at && $booking->estimated_cost)
+                        <small style="display: block; color: #666; font-size: 11px;">*Based on inspection estimate</small>
+                    @endif
                 </div>
                 
                 @if($componentsPrice > 0)
@@ -546,7 +558,7 @@
             </div>
             <div class="total-row">
                 <span class="total-label">TOTAL:</span>
-                <span>Rp {{ number_format($booking->total_price, 0, ',', '.') }}</span>
+                <span>Rp {{ number_format($subtotal, 0, ',', '.') }}</span>
             </div>
         </div>
         
@@ -627,7 +639,7 @@
                 <p><strong>Instructions:</strong></p>
                 <ol>
                     <li>Transfer to the bank account above</li>
-                    <li>Amount: <strong>Rp {{ number_format($booking->total_price, 0, ',', '.') }}</strong></li>
+                    <li>Amount: <strong>Rp {{ number_format($subtotal, 0, ',', '.') }}</strong></li>
                     <li>Add note: "Invoice #INV-{{ str_pad($booking->id, 5, '0', STR_PAD_LEFT) }}"</li>
                     <li>Upload payment proof in your booking page</li>
                 </ol>

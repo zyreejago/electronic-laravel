@@ -159,7 +159,17 @@
                                         </td>
                                         <td class="p-3">
                                             <div class="d-flex align-items-center">
-                                                <span class="fw-bold">Rp {{ number_format($booking->total_price, 0, ',', '.') }}</span>
+                                                @if($booking->inspection_completed_at && $booking->estimated_cost)
+                                                    @php
+                                                        $inventoryCost = $booking->inventoryUsages ? $booking->inventoryUsages->sum(function($usage) {
+                                                            return $usage->quantity_used * ($usage->inventoryItem ? $usage->inventoryItem->unit_price : 0);
+                                                        }) : 0;
+                                                        $totalPrice = $booking->estimated_cost + $inventoryCost;
+                                                    @endphp
+                                                    <span class="fw-bold">Rp {{ number_format($totalPrice, 0, ',', '.') }}</span>
+                                                @else
+                                                    <span class="fw-bold text-muted">Pending Inspection</span>
+                                                @endif
                                             </div>
                                         </td>
                                         <td class="p-3 text-end">

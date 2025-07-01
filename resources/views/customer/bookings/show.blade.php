@@ -105,9 +105,44 @@
                                                     <td class="text-end text-success">-Rp {{ number_format($booking->loyalty_points_used * 100, 0, ',', '.') }}</td>
                                                 </tr>
                                                 @endif
+                                                <tr>
+                                                    <td>Biaya Service (Hasil Pemeriksaan):</td>
+                                                    <td class="text-end">
+                                                        @if($booking->inspection_completed_at && $booking->estimated_cost)
+                                                            Rp {{ number_format($booking->estimated_cost, 0, ',', '.') }}
+                                                        @else
+                                                            <span class="text-muted">Menunggu pemeriksaan awal</span>
+                                                        @endif
+                                                    </td>
+                                                </tr>
+                                                @if($booking->is_emergency)
+                                                <tr>
+                                                    <td>Biaya Emergency:</td>
+                                                    <td class="text-end">Rp 100.000</td>
+                                                </tr>
+                                                @endif
+                                                @if($booking->loyalty_points_used > 0)
+                                                <tr>
+                                                    <td>Diskon Loyalty Points:</td>
+                                                    <td class="text-end text-success">-Rp {{ number_format($booking->loyalty_points_used * 100, 0, ',', '.') }}</td>
+                                                </tr>
+                                                @endif
                                                 <tr class="table-primary fw-bold">
                                                     <td>Total yang Harus Dibayar:</td>
-                                                    <td class="text-end">Rp {{ number_format($booking->total_price, 0, ',', '.') }}</td>
+                                                    <td class="text-end">
+                                                        @if($booking->inspection_completed_at && $booking->estimated_cost)
+                                                            @php
+                                                                $total = $booking->estimated_cost;
+                                                                $total += $booking->serviceComponents->sum(function($c) { return $c->pivot->quantity * $c->pivot->price_at_time; });
+                                                                if(in_array($booking->service_type, ['pickup', 'onsite'])) $total += 50000;
+                                                                if($booking->is_emergency) $total += 100000;
+                                                                $total -= ($booking->loyalty_points_used * 100);
+                                                            @endphp
+                                                            Rp {{ number_format($total, 0, ',', '.') }}
+                                                        @else
+                                                            <span class="text-muted">Menunggu pemeriksaan awal</span>
+                                                        @endif
+                                                    </td>
                                                 </tr>
                                             </table>
                                         </div>

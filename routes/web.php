@@ -13,10 +13,12 @@ use App\Http\Controllers\Admin\ReportsController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\CustomerDashboardController;
-use App\Http\Controllers\CustomerBookingController; // Add this line too
+use App\Http\Controllers\CustomerBookingController;
 use App\Http\Controllers\InspectionController;
 use App\Http\Controllers\TechnicianBookingController;
 use App\Http\Controllers\Admin\InventoryController;
+use App\Http\Controllers\ReceptionController;
+use App\Http\Controllers\InventoryUsageController; // Add this line
 use Illuminate\Support\Facades\Auth;
 
 
@@ -50,8 +52,8 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 Route::middleware(['auth', 'role:user'])->group(function () {
     // User booking routes
     Route::get('/bookings', [BookingController::class, 'index'])->name('bookings.index');
-    Route::get('/bookings/create', [BookingController::class, 'create'])->name('bookings.create');
-    Route::post('/bookings', [BookingController::class, 'store'])->name('bookings.store');
+    // Route::get('/bookings/create', [BookingController::class, 'create'])->name('bookings.create'); // HAPUS BARIS INI
+    // Route::post('/bookings', [BookingController::class, 'store'])->name('bookings.store'); // HAPUS BARIS INI
     Route::get('/bookings/{booking}', [BookingController::class, 'show'])->name('bookings.show');
     Route::get('/bookings/{booking}/rate', [BookingController::class, 'rate'])->name('bookings.rate');
     Route::post('/bookings/{booking}/rate', [BookingController::class, 'submitRate'])->name('bookings.submitRate');
@@ -141,7 +143,12 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
         Route::put('customers/{customer}/reset-password', [CustomerController::class, 'resetPassword'])->name('customers.reset-password');
         
         Route::get('/reports', [ReportsController::class, 'index'])->name('reports');
+        // Hapus dari bagian role:user (sekitar baris 53-54)
+        // Route::get('/bookings/create', [BookingController::class, 'create'])->name('bookings.create');
+        // Route::post('/bookings', [BookingController::class, 'store'])->name('bookings.store');
         Route::get('/bookings', [BookingController::class, 'adminIndex'])->name('bookings.index');
+        Route::get('/bookings/create', [BookingController::class, 'create'])->name('bookings.create');
+        Route::post('/bookings', [BookingController::class, 'store'])->name('bookings.store');
         Route::get('/bookings/{booking}', [BookingController::class, 'adminShow'])->name('bookings.show');
         Route::post('/bookings/{booking}/verify-payment', [BookingController::class, 'verifyPayment'])->name('bookings.verify-payment');
         Route::put('/bookings/{booking}', [BookingController::class, 'adminUpdate'])->name('bookings.update');
@@ -163,8 +170,15 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
             Route::delete('/{inventoryItem}', [InventoryController::class, 'destroy'])->name('destroy');
             Route::post('/{inventoryItem}/restock', [InventoryController::class, 'restock'])->name('restock');
         });
+        // Tambahkan di dalam group admin middleware
+        Route::prefix('reception')->name('reception.')->group(function () {
+            Route::get('/create', [ReceptionController::class, 'create'])->name('create');
+            Route::post('/', [ReceptionController::class, 'store'])->name('store');
+            Route::get('/{booking}/receipt', [ReceptionController::class, 'receipt'])->name('receipt');
+            Route::get('/{booking}/print', [ReceptionController::class, 'printReceipt'])->name('print');
+        });
     });
-});
+}); // Add this closing brace for the admin middleware group
 
 // Test WhatsApp Notification
 Route::get('/test-whatsapp/{phone?}', function ($phone = null) {
@@ -201,4 +215,13 @@ require __DIR__.'/pdf.php';
 // Tambahkan route untuk inventory usage
 Route::post('/bookings/{booking}/inventory-usage', [BookingController::class, 'addInventoryUsage'])
     ->name('bookings.add-inventory-usage')
+    ->middleware('auth');
+
+// Inventory Usage Approval Routes
+Route::post('/inventory-usage/{inventoryUsage}/approve', [InventoryUsageController::class, 'approve'])
+    ->name('inventory-usage.approve')
+    ->middleware('auth');
+    
+Route::post('/inventory-usage/{inventoryUsage}/reject', [InventoryUsageController::class, 'reject'])
+    ->name('inventory-usage.reject')
     ->middleware('auth');

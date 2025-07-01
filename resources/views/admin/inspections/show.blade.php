@@ -127,6 +127,28 @@
                                 @enderror
                             </div>
                             
+                            <!-- Assign Technician Field -->
+                            <div class="mb-4">
+                                <label for="technician_id" class="form-label fw-bold">
+                                    <i class="fas fa-user-cog text-primary me-2"></i>
+                                    Assign Teknisi
+                                </label>
+                                <select class="form-select @error('technician_id') is-invalid @enderror" 
+                                        id="technician_id" name="technician_id" required
+                                        style="border-radius: 10px;">
+                                    <option value="">-- Pilih Teknisi --</option>
+                                    @foreach($technicians as $technician)
+                                        <option value="{{ $technician->id }}" 
+                                                {{ old('technician_id', $booking->technician_id) == $technician->id ? 'selected' : '' }}>
+                                            {{ $technician->user->name }} - {{ $technician->specialization }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @error('technician_id')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            
                             <div class="row g-3 mb-4">
                                 <div class="col-md-6">
                                     <label for="estimated_cost" class="form-label fw-bold">

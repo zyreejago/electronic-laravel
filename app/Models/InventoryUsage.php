@@ -15,7 +15,10 @@ class InventoryUsage extends Model
         'booking_id',
         'quantity_used',
         'used_at',
-        'notes'
+        'notes',
+        'status',
+        'rejection_reason',
+        'reason'
     ];
 
     protected $casts = [

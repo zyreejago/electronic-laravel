@@ -101,7 +101,11 @@
                                     </div>
                                     <div class="mb-2">
                                         <span class="text-muted">Price:</span>
-                                        <span class="fw-bold ms-2">Rp {{ number_format($booking->total_price, 0, ',', '.') }}</span>
+                                        @if($booking->inspection_completed_at && $booking->estimated_cost)
+                                            <span class="fw-bold ms-2">Rp {{ number_format($booking->estimated_cost, 0, ',', '.') }}</span>
+                                        @else
+                                            <span class="fw-bold ms-2 text-muted">Menunggu pemeriksaan awal</span>
+                                        @endif
                                     </div>
                                     <div>
                                         <span class="text-muted">Service Type:</span>
@@ -128,10 +132,10 @@
                             </div>
                         </div>
 
-                        <hr class="my-4">
+                        {{-- <hr class="my-4"> --}}
 
                         <!-- Service Components and Costs -->
-                        <div class="d-flex align-items-center mb-3">
+                        {{-- <div class="d-flex align-items-center mb-3">
                             <div class="rounded-circle bg-success bg-opacity-10 text-success p-2 me-3" 
                                  style="width: 45px; height: 45px; display: flex; align-items: center; justify-content: center;">
                                 <i class="fas fa-list-alt fa-lg"></i>
@@ -140,15 +144,15 @@
                                 <h6 class="fw-bold mb-0">Service Components & Costs</h6>
                                 <small class="text-muted">Detailed breakdown of costs</small>
                             </div>
-                        </div>
+                        </div> --}}
                         <div class="ps-5 mb-4">
-                            <!-- Base Service Cost -->
-                            <div class="mb-3">
+                            <!-- Base Service Cost - Hapus atau comment bagian ini -->
+                            {{-- <div class="mb-3">
                                 <div class="d-flex justify-content-between align-items-center">
                                     <span class="text-muted">Base Service Cost:</span>
                                     <span class="fw-bold">Rp {{ number_format($booking->service->price, 0, ',', '.') }}</span>
                                 </div>
-                            </div>
+                            </div> --}}
 
                             <!-- Service Components -->
                             @if($booking->serviceComponents->count() > 0)
@@ -168,17 +172,17 @@
                             @endif
 
                             <!-- Inventory/Spare Parts Cost -->
-                            @if($booking->inventoryUsages->count() > 0)
+                            {{-- @if($booking->inventoryUsages->count() > 0)
                                 <div class="mb-3">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <span class="text-muted">Spare Parts Cost:</span>
                                         <span class="fw-bold">Rp {{ number_format($booking->inventory_cost, 0, ',', '.') }}</span>
                                     </div>
                                 </div>
-                            @endif
+                            @endif --}}
 
                             <!-- Delivery Fee -->
-                            @if($booking->service_type === 'pickup' || $booking->service_type === 'onsite')
+                            {{-- @if($booking->service_type === 'pickup' || $booking->service_type === 'onsite')
                                 <div class="mb-3">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <span class="text-muted">Delivery Fee:</span>
@@ -195,15 +199,38 @@
                                         <span class="fw-bold text-success">- Rp {{ number_format($booking->loyalty_points_used * 100, 0, ',', '.') }}</span>
                                     </div>
                                 </div>
-                            @endif
+                            @endif --}}
 
-                            <hr class="my-3">
+                            {{-- <hr class="my-3"> --}}
 
                             <!-- Total Cost -->
-                            <div class="d-flex justify-content-between align-items-center">
+                            {{-- <div class="d-flex justify-content-between align-items-center">
                                 <span class="text-muted">Total Cost:</span>
-                                <span class="fw-bold fs-5">Rp {{ number_format($booking->total_price, 0, ',', '.') }}</span>
-                            </div>
+                                @if($booking->inspection_completed_at && $booking->estimated_cost)
+                                    @php
+                                        $serviceComponentsCost = $booking->serviceComponents->sum(function($c) { 
+                                            return $c->pivot->quantity * $c->pivot->price_at_time; 
+                                        });
+                                        $inventoryCost = $booking->inventory_cost ?? 0;
+                                        $estimatedCost = $booking->estimated_cost ?? 0;
+                                        $deliveryFee = 0;
+                                        $emergencyFee = 0;
+                                        
+                                        if($booking->service_type === 'pickup' || $booking->service_type === 'onsite') {
+                                            $deliveryFee = 50000;
+                                        }
+                                        
+                                        if($booking->is_emergency) {
+                                            $emergencyFee = 100000;
+                                        }
+                                        
+                                        $totalCost = $estimatedCost + $inventoryCost + $serviceComponentsCost + $deliveryFee + $emergencyFee - (($booking->loyalty_points_used ?? 0) * 100);
+                                    @endphp
+                                    <span class="fw-bold fs-5">Rp {{ number_format($totalCost, 0, ',', '.') }}</span>
+                                @else
+                                    <span class="fw-bold fs-5 text-muted">Menunggu pemeriksaan awal</span>
+                                @endif
+                            </div> --}}
                         </div>
 
                         <!-- Inventory Usage Section -->
@@ -230,17 +257,29 @@
                                                 <th>Quantity</th>
                                                 <th>Unit Price</th>
                                                 <th>Total Price</th>
+                                                <th>Status</th>
                                                 <th>Technician</th>
                                                 <th>Used At</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             @foreach($booking->inventoryUsages as $usage)
-                                                <tr>
+                                                <tr class="{{ $usage->status === 'pending_approval' ? 'table-warning' : '' }}">
                                                     <td>{{ $usage->inventoryItem ? $usage->inventoryItem->name : 'Item Tidak Ditemukan' }}</td>
                                                     <td>{{ $usage->quantity_used }}</td>
                                                     <td>Rp {{ $usage->inventoryItem ? number_format($usage->inventoryItem->unit_price, 0, ',', '.') : '0' }}</td>
                                                     <td>Rp {{ $usage->inventoryItem ? number_format($usage->quantity_used * $usage->inventoryItem->unit_price, 0, ',', '.') : '0' }}</td>
+                                                    <td>
+                                                        @if($usage->status === 'pending_approval')
+                                                            <span class="badge bg-warning"><i class="fas fa-clock me-1"></i>Pending Approval</span>
+                                                        @elseif($usage->status === 'approved')
+                                                            <span class="badge bg-success"><i class="fas fa-check me-1"></i>Approved</span>
+                                                        @elseif($usage->status === 'rejected')
+                                                            <span class="badge bg-danger"><i class="fas fa-times me-1"></i>Rejected</span>
+                                                        @else
+                                                            <span class="badge bg-info"><i class="fas fa-info me-1"></i>Used</span>
+                                                        @endif
+                                                    </td>
                                                     <td>{{ $usage->technician ? $usage->technician->user->name : 'N/A' }}</td>
                                                     <td>{{ $usage->used_at ? $usage->used_at->format('d M Y H:i') : 'N/A' }}</td>
                                                 </tr>
@@ -250,11 +289,157 @@
                                             <tr>
                                                 <td colspan="3" class="fw-bold">Total Biaya Spare Parts:</td>
                                                 <td class="fw-bold">Rp {{ number_format($booking->inventory_cost, 0, ',', '.') }}</td>
-                                                <td colspan="2"></td>
+                                                <td colspan="3"></td>
                                             </tr>
                                         </tfoot>
                                     </table>
                                 </div>
+                            </div>
+                        @endif
+
+                        <!-- Pending Inventory Approval Section -->
+                        @php
+                            $pendingInventoryUsages = $booking->inventoryUsages->where('status', 'pending_approval');
+                        @endphp
+                        @if($pendingInventoryUsages->count() > 0 && auth()->user()->role === 'user' && auth()->id() === $booking->user_id)
+                            <hr class="my-4">
+                            
+                            <div class="d-flex align-items-center mb-3">
+                                <div class="rounded-circle bg-danger bg-opacity-10 text-danger p-2 me-3" 
+                                     style="width: 45px; height: 45px; display: flex; align-items: center; justify-content: center;">
+                                    <i class="fas fa-exclamation-triangle fa-lg"></i>
+                                </div>
+                                <div>
+                                    <h6 class="fw-bold mb-0">Persetujuan Spare Parts Tambahan</h6>
+                                    <small class="text-muted">Teknisi memerlukan persetujuan untuk menggunakan spare parts tambahan</small>
+                                </div>
+                            </div>
+                            
+                            <div class="ps-5 mb-4">
+                                @foreach($pendingInventoryUsages as $usage)
+                                    <div class="card border-warning mb-3">
+                                        <div class="card-header bg-warning bg-opacity-10">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <h6 class="mb-0 fw-bold">{{ $usage->inventoryItem ? $usage->inventoryItem->name : 'Item Tidak Ditemukan' }}</h6>
+                                                <span class="badge bg-warning">Menunggu Persetujuan</span>
+                                            </div>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <p class="mb-2"><strong>Quantity:</strong> {{ $usage->quantity_used }}</p>
+                                                    <p class="mb-2"><strong>Unit Price:</strong> Rp {{ $usage->inventoryItem ? number_format($usage->inventoryItem->unit_price, 0, ',', '.') : '0' }}</p>
+                                                    <p class="mb-2"><strong>Total Cost:</strong> Rp {{ $usage->inventoryItem ? number_format($usage->quantity_used * $usage->inventoryItem->unit_price, 0, ',', '.') : '0' }}</p>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <p class="mb-2"><strong>Technician:</strong> {{ $usage->technician ? $usage->technician->user->name : 'N/A' }}</p>
+                                                    <p class="mb-2"><strong>Requested At:</strong> {{ $usage->created_at ? $usage->created_at->format('d M Y H:i') : 'N/A' }}</p>
+                                                    @if($usage->notes)
+                                                        <p class="mb-2"><strong>Notes:</strong> {{ $usage->notes }}</p>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                            @if($usage->reason)
+                                                <div class="alert alert-info mt-3">
+                                                    <strong>Reason for Additional Inventory:</strong><br>
+                                                    {{ $usage->reason }}
+                                                </div>
+                                            @endif
+                                            <div class="d-flex gap-2 mt-3">
+                                <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#approveModal{{ $usage->id }}">
+                                    <i class="fas fa-check me-1"></i>Setujui
+                                </button>
+                                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#rejectModal{{ $usage->id }}">
+                                    <i class="fas fa-times me-1"></i>Tolak
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Approve Modal -->
+                    <div class="modal fade" id="approveModal{{ $usage->id }}" tabindex="-1">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header bg-success bg-opacity-10">
+                                    <h5 class="modal-title text-success">
+                                        <i class="fas fa-check me-2"></i>Setujui Penggunaan Spare Part
+                                    </h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                </div>
+                                <form action="{{ route('inventory-usage.approve', $usage) }}" method="POST">
+                                    @csrf
+                                    <div class="modal-body">
+                                        <div class="alert alert-success border-0">
+                                            <div class="d-flex align-items-center">
+                                                <i class="fas fa-info-circle me-2"></i>
+                                                <div>
+                                                    <strong>Konfirmasi Persetujuan</strong>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <p>Anda akan menyetujui penggunaan spare part:</p>
+                                        <div class="card border-success">
+                                            <div class="card-body">
+                                                <h6 class="card-title text-success">{{ $usage->inventoryItem ? $usage->inventoryItem->name : 'Item Tidak Ditemukan' }}</h6>
+                                                <div class="row">
+                                                    <div class="col-6">
+                                                        <small class="text-muted">Quantity:</small><br>
+                                                        <strong>{{ $usage->quantity_used }}</strong>
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <small class="text-muted">Total Cost:</small><br>
+                                                        <strong>Rp {{ $usage->inventoryItem ? number_format($usage->quantity_used * $usage->inventoryItem->unit_price, 0, ',', '.') : '0' }}</strong>
+                                                    </div>
+                                                </div>
+                                                @if($usage->reason)
+                                                    <div class="mt-2">
+                                                        <small class="text-muted">Alasan:</small><br>
+                                                        <span class="text-dark">{{ $usage->reason }}</span>
+                                                    </div>
+                                                @endif
+                                            </div>
+                                        </div>
+                                        <p class="mt-3 mb-0">Biaya ini akan ditambahkan ke total tagihan Anda.</p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                            <i class="fas fa-times me-1"></i>Batal
+                                        </button>
+                                        <button type="submit" class="btn btn-success">
+                                            <i class="fas fa-check me-1"></i>Ya, Setujui
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Reject Modal -->
+                    <div class="modal fade" id="rejectModal{{ $usage->id }}" tabindex="-1">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Tolak Penggunaan Spare Part</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                </div>
+                                <form action="{{ route('inventory-usage.reject', $usage) }}" method="POST">
+                                    @csrf
+                                    <div class="modal-body">
+                                        <p>Anda akan menolak penggunaan spare part: <strong>{{ $usage->inventoryItem ? $usage->inventoryItem->name : 'Item Tidak Ditemukan' }}</strong></p>
+                                        <div class="mb-3">
+                                            <label for="rejection_reason{{ $usage->id }}" class="form-label">Alasan Penolakan:</label>
+                                            <textarea class="form-control" id="rejection_reason{{ $usage->id }}" name="rejection_reason" rows="3" required placeholder="Berikan alasan mengapa Anda menolak penggunaan spare part ini..."></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                        <button type="submit" class="btn btn-danger">Tolak</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
                             </div>
                         @endif
 
@@ -399,7 +584,7 @@
                             </div>
                             <div>
                                 <h6 class="fw-bold mb-0">Description</h6>
-                                <small class="text-muted">Customer's notes</small>
+                                {{-- <small class="text-muted">Customer's notes</small> --}}
                             </div>
                         </div>
                         <div class="ps-5">
@@ -600,21 +785,77 @@
                             </div>
                         </div>
                         <div class="card-body p-4">
-                            <div class="d-flex justify-content-between align-items-center mb-3">
-                                <span class="text-muted">Service Price:</span>
-                                <span class="fw-bold">Rp {{ number_format($booking->total_price, 0, ',', '.') }}</span>
-                            </div>
-                            @if($booking->loyalty_points_used)
+                            <div class="card-body p-4">
+                                @php
+                                    // Perhitungan total yang konsisten
+                                    $serviceComponentsCost = $booking->serviceComponents->sum(function($c) { 
+                                        return $c->pivot->quantity * $c->pivot->price_at_time; 
+                                    });
+                                    $inventoryCost = $booking->inventory_cost ?? 0;
+                                    $estimatedCost = $booking->estimated_cost ?? 0;
+                                    $deliveryFee = 0;
+                                    $emergencyFee = 0;
+                                    
+                                    // Delivery fee
+                                    if($booking->service_type === 'pickup' || $booking->service_type === 'onsite') {
+                                        $deliveryFee = 50000;
+                                    }
+                                    
+                                    // Emergency fee
+                                    if($booking->is_emergency) {
+                                        $emergencyFee = 100000;
+                                    }
+                                    
+                                    $subtotal = $estimatedCost + $inventoryCost + $serviceComponentsCost + $deliveryFee + $emergencyFee;
+                                    $loyaltyDiscount = ($booking->loyalty_points_used ?? 0) * 100;
+                                    $totalAmount = $subtotal - $loyaltyDiscount;
+                                @endphp
+                                
                                 <div class="d-flex justify-content-between align-items-center mb-3">
-                                    <span class="text-muted">Loyalty Points Used:</span>
-                                    <span class="fw-bold text-success">- Rp {{ number_format($booking->loyalty_points_used * 100, 0, ',', '.') }}</span>
+                                    <span class="text-muted">Estimated Service Cost:</span>
+                                    <span class="fw-bold">Rp {{ number_format($estimatedCost, 0, ',', '.') }}</span>
                                 </div>
-                            @endif
-                            <hr>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <span class="text-muted">Total Amount:</span>
-                                <span class="fw-bold fs-5">Rp {{ number_format($booking->total_price - ($booking->loyalty_points_used * 100 ?? 0), 0, ',', '.') }}</span>
-                            </div>
+                                
+                                @if($inventoryCost > 0)
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <span class="text-muted">Inventory Cost:</span>
+                                        <span class="fw-bold">Rp {{ number_format($inventoryCost, 0, ',', '.') }}</span>
+                                    </div>
+                                @endif
+                                
+                                @if($serviceComponentsCost > 0)
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <span class="text-muted">Service Components:</span>
+                                        <span class="fw-bold">Rp {{ number_format($serviceComponentsCost, 0, ',', '.') }}</span>
+                                    </div>
+                                @endif
+                                
+                                @if($deliveryFee > 0)
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <span class="text-muted">{{ $booking->service_type === 'pickup' ? 'Pickup' : 'Onsite' }} Fee:</span>
+                                        <span class="fw-bold">Rp {{ number_format($deliveryFee, 0, ',', '.') }}</span>
+                                    </div>
+                                @endif
+                                
+                                @if($emergencyFee > 0)
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <span class="text-muted">Emergency Fee:</span>
+                                        <span class="fw-bold">Rp {{ number_format($emergencyFee, 0, ',', '.') }}</span>
+                                    </div>
+                                @endif
+                                
+                                @if($loyaltyDiscount > 0)
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <span class="text-muted">Loyalty Points Used:</span>
+                                        <span class="fw-bold text-success">- Rp {{ number_format($loyaltyDiscount, 0, ',', '.') }}</span>
+                                    </div>
+                                @endif
+                                
+                                <hr>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="text-muted">Total Amount:</span>
+                                    <span class="fw-bold fs-5">Rp {{ number_format($totalAmount, 0, ',', '.') }}</span>
+                                </div>
                             <div class="d-grid mt-4">
                                 <button type="button" class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#paymentModal">
                                     <i class="fas fa-credit-card me-2"></i>Pay Now
@@ -693,13 +934,14 @@
                 @endif
 
                 {{-- @if($booking->is_paid) --}}
-                    <div class="d-grid mb-4">
+                    
+                {{-- @endif --}}
+            </div>
+            <div class="d-grid mb-4">
                         <a href="{{ route('bookings.invoice', $booking) }}" class="btn btn-outline-primary btn-lg" target="_blank">
                             <i class="fas fa-file-invoice me-2"></i>Lihat Invoice
                         </a>
                     </div>
-                {{-- @endif --}}
-            </div>
         </div>
     </div>
 
@@ -770,3 +1012,4 @@
     </script>
     @endpush
 </x-app-layout>
+                            

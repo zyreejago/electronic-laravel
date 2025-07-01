@@ -17,12 +17,12 @@ class BookingPolicy
 
     public function create(User $user)
     {
-        return $user->role === 'user'; // Hanya user yang bisa membuat booking
+        return $user->role === 'admin'; // Ubah dari 'user' ke 'admin'
     }
 
     public function store(User $user)
     {
-        return $user->role === 'user'; // Hanya user yang bisa menyimpan booking
+        return $user->role === 'admin'; // Ubah dari 'user' ke 'admin'
     }
 
     public function view(User $user, Booking $booking)

@@ -4,9 +4,9 @@
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 {{ __('My Bookings') }}
             </h2>
-            <a href="{{ route('bookings.create') }}" class="btn btn-primary btn-lg shadow-sm">
+            {{-- <a href="{{ route('bookings.create') }}" class="btn btn-primary btn-lg shadow-sm">
                 <i class="fas fa-plus-circle me-2"></i>New Booking
-            </a>
+            </a> --}}
         </div>
     </x-slot>
 
@@ -158,7 +158,17 @@
                                                 <div class="rounded-circle bg-success bg-opacity-10 text-success p-2 me-2" style="width: 35px; height: 35px; display: flex; align-items: center; justify-content: center;">
                                                     <i class="fas fa-money-bill-wave"></i>
                                                 </div>
-                                                <span class="fw-bold">Rp {{ number_format($booking->total_price, 0, ',', '.') }}</span>
+                                                @if($booking->inspection_completed_at && $booking->estimated_cost)
+                                                    @php
+                                                        $inventoryCost = $booking->inventoryUsages ? $booking->inventoryUsages->sum(function($usage) {
+                                                            return $usage->quantity_used * ($usage->inventoryItem ? $usage->inventoryItem->unit_price : 0);
+                                                        }) : 0;
+                                                        $totalPrice = $booking->estimated_cost + $inventoryCost;
+                                                    @endphp
+                                                    <span class="fw-bold">Rp {{ number_format($totalPrice, 0, ',', '.') }}</span>
+                                                @else
+                                                    <span class="fw-bold text-muted">Pending Inspection</span>
+                                                @endif
                                             </div>
                                         </td>
                                         <td class="p-3 text-end">
@@ -183,9 +193,9 @@
                         <h5 class="fw-bold">No Bookings Found</h5>
                         <p class="text-muted mb-4">You haven't made any bookings yet or no bookings match your filter criteria.</p>
                         <div class="d-flex justify-content-center gap-3">
-                            <a href="{{ route('bookings.create') }}" class="btn btn-primary">
+                            {{-- <a href="{{ route('bookings.create') }}" class="btn btn-primary">
                                 <i class="fas fa-plus-circle me-2"></i>Create New Booking
-                            </a>
+                            </a> --}}
                             <a href="{{ route('bookings.index') }}" class="btn btn-outline-secondary">
                                 <i class="fas fa-sync-alt me-2"></i>Reset Filters
                             </a>

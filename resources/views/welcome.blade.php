@@ -125,10 +125,10 @@
                             <a href="{{ route('services.index') }}" class="btn btn-light btn-lg px-4">
                                 <i class="fas fa-tools me-2"></i>Lihat Layanan
                             </a>
-                            <a href="{{ route('bookings.create') }}" class="btn btn-outline-light btn-lg px-4">
+                            {{-- <a href="{{ route('bookings.create') }}" class="btn btn-outline-light btn-lg px-4">
                                 <i class="fas fa-calendar-plus me-2"></i>Buat Janji
                             </a>
-                        </div>
+                        </div> --}}
                     </div>
                     <!-- <div class="col-lg-6 d-none d-lg-block">
                         <img src="/images/hero-image.svg" alt="Service Illustration" class="img-fluid">
@@ -386,9 +386,9 @@
                         <h2 class="display-5 fw-bold mb-4">Siap untuk memperbaiki perangkat Anda?</h2>
                         <p class="lead mb-4">Buat janji sekarang dan dapatkan layanan terbaik dari teknisi profesional kami</p>
                         <div class="d-flex justify-content-center gap-3">
-                            <a href="{{ route('bookings.create') }}" class="btn btn-light btn-lg px-5">
+                            {{-- <a href="{{ route('bookings.create') }}" class="btn btn-light btn-lg px-5">
                                 <i class="fas fa-calendar-plus me-2"></i>Buat Janji
-                            </a>
+                            </a> --}}
                             <a href="tel:+6281234567890" class="btn btn-outline-light btn-lg px-5">
                                 <i class="fas fa-phone me-2"></i>Hubungi Kami
                             </a>
