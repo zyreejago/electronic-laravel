@@ -2,10 +2,10 @@
     <x-slot name="header">
         <div class="d-flex justify-content-between align-items-center">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                {{ __('Manage Bookings') }}
+                {{ __('Kelola Pemesanan') }}
             </h2>
             <a href="{{ route('admin.bookings.create') }}" class="btn btn-primary btn-lg shadow-sm">
-                <i class="fas fa-plus-circle me-2"></i>New Booking
+                <i class="fas fa-plus-circle me-2"></i>{{ __('Pemesanan Baru') }}
             </a>
         </div>
     </x-slot>
@@ -18,7 +18,7 @@
                         <i class="fas fa-check"></i>
                     </div>
                     <div>
-                        <strong>Success!</strong> {{ session('success') }}
+                        <strong>{{ __('Berhasil!') }}</strong> {{ session('success') }}
                     </div>
                     <button type="button" class="btn-close btn-close-white ms-auto" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
@@ -30,43 +30,43 @@
             <div class="card-header p-0">
                 <div class="bg-primary text-white p-3 text-center">
                     <h5 class="mb-0 fw-bold">
-                        <i class="fas fa-filter me-2"></i>Filter Bookings
+                        <i class="fas fa-filter me-2"></i>{{ __('Filter Pemesanan') }}
                     </h5>
                 </div>
             </div>
             <div class="card-body p-4 bg-light bg-gradient">
                 <form class="row g-3">
                     <div class="col-md-3">
-                        <label for="statusFilter" class="form-label fw-bold text-primary">Status</label>
+                        <label for="statusFilter" class="form-label fw-bold text-primary">{{ __('Status') }}</label>
                         <select class="form-select form-select-lg border-0 shadow-sm" id="statusFilter" name="status">
-                            <option value="">All Statuses</option>
-                            <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Pending</option>
-                            <option value="confirmed" {{ request('status') == 'confirmed' ? 'selected' : '' }}>Confirmed</option>
-                            <option value="completed" {{ request('status') == 'completed' ? 'selected' : '' }}>Completed</option>
-                            <option value="cancelled" {{ request('status') == 'cancelled' ? 'selected' : '' }}>Cancelled</option>
+                            <option value="">{{ __('Semua Status') }}</option>
+                            <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>{{ __('Menunggu') }}</option>
+                            <option value="confirmed" {{ request('status') == 'confirmed' ? 'selected' : '' }}>{{ __('Dikonfirmasi') }}</option>
+                            <option value="completed" {{ request('status') == 'completed' ? 'selected' : '' }}>{{ __('Selesai') }}</option>
+                            <option value="cancelled" {{ request('status') == 'cancelled' ? 'selected' : '' }}>{{ __('Dibatalkan') }}</option>
                         </select>
                     </div>
                     <div class="col-md-3">
-                        <label for="dateFilter" class="form-label fw-bold text-primary">Date Range</label>
+                        <label for="dateFilter" class="form-label fw-bold text-primary">{{ __('Rentang Tanggal') }}</label>
                         <select class="form-select form-select-lg border-0 shadow-sm" id="dateFilter" name="date_range">
-                            <option value="">All Time</option>
-                            <option value="today" {{ request('date_range') == 'today' ? 'selected' : '' }}>Today</option>
-                            <option value="week" {{ request('date_range') == 'week' ? 'selected' : '' }}>This Week</option>
-                            <option value="month" {{ request('date_range') == 'month' ? 'selected' : '' }}>This Month</option>
+                            <option value="">{{ __('Semua Waktu') }}</option>
+                            <option value="today" {{ request('date_range') == 'today' ? 'selected' : '' }}>{{ __('Hari Ini') }}</option>
+                            <option value="week" {{ request('date_range') == 'week' ? 'selected' : '' }}>{{ __('Minggu Ini') }}</option>
+                            <option value="month" {{ request('date_range') == 'month' ? 'selected' : '' }}>{{ __('Bulan Ini') }}</option>
                         </select>
                     </div>
                     <div class="col-md-4">
-                        <label for="searchInput" class="form-label fw-bold text-primary">Search</label>
+                        <label for="searchInput" class="form-label fw-bold text-primary">{{ __('Pencarian') }}</label>
                         <div class="input-group input-group-lg shadow-sm">
                             <span class="input-group-text bg-white border-0">
                                 <i class="fas fa-search text-primary"></i>
                             </span>
-                            <input type="text" class="form-control border-0" id="searchInput" name="search" placeholder="Search by ID, customer, or service..." value="{{ request('search') }}">
+                            <input type="text" class="form-control border-0" id="searchInput" name="search" placeholder="{{ __('Cari berdasarkan ID, pelanggan, atau layanan...') }}" value="{{ request('search') }}">
                         </div>
                     </div>
                     <div class="col-md-2 d-flex align-items-end">
                         <button type="submit" class="btn btn-primary btn-lg w-100 shadow-sm">
-                            <i class="fas fa-search me-2"></i> Search
+                            <i class="fas fa-search me-2"></i> {{ __('Cari') }}
                         </button>
                     </div>
                 </form>
@@ -79,18 +79,18 @@
                 <div style="background: linear-gradient(90deg, #4e73df, #224abe);" class="text-white p-4">
                     <div class="d-flex justify-content-between align-items-center">
                         <h5 class="card-title mb-0 fw-bold">
-                            <i class="fas fa-calendar-check me-2"></i>All Bookings
+                            <i class="fas fa-calendar-check me-2"></i>{{ __('Semua Pemesanan') }}
                         </h5>
                         <div class="d-flex gap-2">
                             <div class="dropdown">
                                 <button class="btn btn-light btn-sm dropdown-toggle" type="button" id="sortDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <i class="fas fa-sort me-1"></i> Sort
+                                    <i class="fas fa-sort me-1"></i> {{ __('Urutkan') }}
                                 </button>
                                 <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="sortDropdown">
-                                    <li><a class="dropdown-item" href="{{ request()->fullUrlWithQuery(['sort' => 'newest']) }}"><i class="fas fa-sort-amount-down me-2"></i> Newest First</a></li>
-                                    <li><a class="dropdown-item" href="{{ request()->fullUrlWithQuery(['sort' => 'oldest']) }}"><i class="fas fa-sort-amount-up me-2"></i> Oldest First</a></li>
+                                    <li><a class="dropdown-item" href="{{ request()->fullUrlWithQuery(['sort' => 'newest']) }}"><i class="fas fa-sort-amount-down me-2"></i> {{ __('Terbaru Dulu') }}</a></li>
+                                    <li><a class="dropdown-item" href="{{ request()->fullUrlWithQuery(['sort' => 'oldest']) }}"><i class="fas fa-sort-amount-up me-2"></i> {{ __('Terlama Dulu') }}</a></li>
                                     <li><hr class="dropdown-divider"></li>
-                                    <li><a class="dropdown-item" href="{{ request()->fullUrlWithQuery(['sort' => 'upcoming']) }}"><i class="fas fa-calendar-day me-2"></i> Upcoming Bookings</a></li>
+                                    <li><a class="dropdown-item" href="{{ request()->fullUrlWithQuery(['sort' => 'upcoming']) }}"><i class="fas fa-calendar-day me-2"></i> {{ __('Pemesanan Mendatang') }}</a></li>
                                 </ul>
                             </div>
                         </div>
@@ -118,7 +118,7 @@
                                         <td class="p-3">
                                             <span class="fw-bold">#{{ $booking->id }}</span>
                                             @if($booking->is_emergency)
-                                                <span class="badge bg-danger ms-2"><i class="fas fa-bolt me-1"></i>Emergency</span>
+                                                <span class="badge bg-danger ms-2"><i class="fas fa-bolt me-1"></i>{{ __('Darurat') }}</span>
                                             @endif
                                         </td>
                                         <td class="p-3">

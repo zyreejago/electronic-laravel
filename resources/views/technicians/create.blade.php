@@ -2,10 +2,10 @@
     <x-slot name="header">
         <div class="d-flex justify-content-between align-items-center">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                {{ __('Add New Technician') }}
+                {{ __('Tambah Teknisi Baru') }}
             </h2>
             <a href="{{ route('technicians.index') }}" class="btn btn-outline-primary btn-lg shadow-sm">
-                <i class="fas fa-arrow-left me-2"></i>Back to Technicians
+                <i class="fas fa-arrow-left me-2"></i>{{ __('Kembali ke Teknisi') }}
             </a>
         </div>
     </x-slot>
@@ -15,7 +15,7 @@
             <div class="card-header p-0">
                 <div style="background: linear-gradient(90deg, #1cc88a, #13855c);" class="text-white p-4">
                     <h5 class="card-title mb-0 fw-bold">
-                        <i class="fas fa-user-plus me-2"></i>Technician Information
+                        <i class="fas fa-user-plus me-2"></i>{{ __('Informasi Teknisi') }}
                     </h5>
                 </div>
             </div>
@@ -26,9 +26,9 @@
                     <div class="row mb-4">
                         <div class="col-md-6">
                             <label for="name" class="form-label fw-bold text-primary">
-                                <i class="fas fa-user me-2"></i>Full Name
+                                <i class="fas fa-user me-2"></i>{{ __('Nama Lengkap') }}
                             </label>
-                            <input type="text" class="form-control form-control-lg border-0 shadow-sm @error('name') is-invalid @enderror" id="name" name="name" value="{{ old('name') }}" placeholder="Enter technician's full name" required>
+                            <input type="text" class="form-control form-control-lg border-0 shadow-sm @error('name') is-invalid @enderror" id="name" name="name" value="{{ old('name') }}" placeholder="{{ __('Masukkan nama lengkap teknisi') }}" required>
                             @error('name')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -36,9 +36,9 @@
 
                         <div class="col-md-6">
                             <label for="email" class="form-label fw-bold text-primary">
-                                <i class="fas fa-envelope me-2"></i>Email Address
+                                <i class="fas fa-envelope me-2"></i>{{ __('Alamat Email') }}
                             </label>
-                            <input type="email" class="form-control form-control-lg border-0 shadow-sm @error('email') is-invalid @enderror" id="email" name="email" value="{{ old('email') }}" placeholder="Enter email address" required>
+                            <input type="email" class="form-control form-control-lg border-0 shadow-sm @error('email') is-invalid @enderror" id="email" name="email" value="{{ old('email') }}" placeholder="{{ __('Masukkan alamat email') }}" required>
                             @error('email')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -48,19 +48,19 @@
                     <div class="row mb-4">
                         <div class="col-md-6">
                             <label for="phone" class="form-label fw-bold text-primary">
-                                <i class="fas fa-phone me-2"></i>WhatsApp Number
+                                <i class="fas fa-phone me-2"></i>{{ __('Nomor WhatsApp') }}
                             </label>
-                            <input type="text" class="form-control form-control-lg border-0 shadow-sm @error('phone') is-invalid @enderror" id="phone" name="phone" value="{{ old('phone') }}" placeholder="e.g. 08123456789" required>
+                            <input type="text" class="form-control form-control-lg border-0 shadow-sm @error('phone') is-invalid @enderror" id="phone" name="phone" value="{{ old('phone') }}" placeholder="{{ __('contoh: 08123456789') }}" required>
                             @error('phone')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
                         <div class="col-md-6">
                             <label for="password" class="form-label fw-bold text-primary">
-                                <i class="fas fa-lock me-2"></i>Password
+                                <i class="fas fa-lock me-2"></i>{{ __('Kata Sandi') }}
                             </label>
                             <div class="input-group">
-                                <input type="password" class="form-control form-control-lg border-0 shadow-sm @error('password') is-invalid @enderror" id="password" name="password" placeholder="Enter password" required>
+                                <input type="password" class="form-control form-control-lg border-0 shadow-sm @error('password') is-invalid @enderror" id="password" name="password" placeholder="{{ __('Masukkan kata sandi') }}" required>
                                 <button class="btn btn-outline-secondary border-0 shadow-sm" type="button" id="togglePassword">
                                     <i class="fas fa-eye"></i>
                                 </button>
@@ -74,10 +74,10 @@
                     <div class="row mb-4">
                         <div class="col-md-6">
                             <label for="password_confirmation" class="form-label fw-bold text-primary">
-                                <i class="fas fa-lock me-2"></i>Confirm Password
+                                <i class="fas fa-lock me-2"></i>{{ __('Konfirmasi Kata Sandi') }}
                             </label>
                             <div class="input-group">
-                                <input type="password" class="form-control form-control-lg border-0 shadow-sm" id="password_confirmation" name="password_confirmation" placeholder="Confirm password" required>
+                                <input type="password" class="form-control form-control-lg border-0 shadow-sm" id="password_confirmation" name="password_confirmation" placeholder="{{ __('Konfirmasi kata sandi') }}" required>
                                 <button class="btn btn-outline-secondary border-0 shadow-sm" type="button" id="toggleConfirmPassword">
                                     <i class="fas fa-eye"></i>
                                 </button>
@@ -87,9 +87,9 @@
 
                     <div class="mb-4">
                         <label for="specialization" class="form-label fw-bold text-primary">
-                            <i class="fas fa-tools me-2"></i>Specialization
+                            <i class="fas fa-tools me-2"></i>{{ __('Spesialisasi') }}
                         </label>
-                        <input type="text" class="form-control form-control-lg border-0 shadow-sm @error('specialization') is-invalid @enderror" id="specialization" name="specialization" value="{{ old('specialization') }}" placeholder="e.g. Smartphone Repair, Computer Hardware, etc." required>
+                        <input type="text" class="form-control form-control-lg border-0 shadow-sm @error('specialization') is-invalid @enderror" id="specialization" name="specialization" value="{{ old('specialization') }}" placeholder="{{ __('contoh: Perbaikan Smartphone, Hardware Komputer, dll.') }}" required>
                         @error('specialization')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
@@ -97,26 +97,26 @@
 
                     <div class="mb-4">
                         <label for="bio" class="form-label fw-bold text-primary">
-                            <i class="fas fa-address-card me-2"></i>Bio
+                            <i class="fas fa-address-card me-2"></i>{{ __('Bio') }}
                         </label>
-                        <textarea class="form-control border-0 shadow-sm @error('bio') is-invalid @enderror" id="bio" name="bio" rows="4" placeholder="Enter technician's bio and experience...">{{ old('bio') }}</textarea>
+                        <textarea class="form-control border-0 shadow-sm @error('bio') is-invalid @enderror" id="bio" name="bio" rows="4" placeholder="{{ __('Masukkan bio dan pengalaman teknisi...') }}">{{ old('bio') }}</textarea>
                         @error('bio')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
-                        <div class="form-text mt-2">Provide a brief description of the technician's experience and expertise.</div>
+                        <div class="form-text mt-2">{{ __('Berikan deskripsi singkat tentang pengalaman dan keahlian teknisi.') }}</div>
                     </div>
 
                     <div class="mb-4">
                         <div class="form-check form-switch">
                             <input type="checkbox" class="form-check-input @error('is_available') is-invalid @enderror" id="is_available" name="is_available" value="1" {{ old('is_available') ? 'checked' : '' }} style="width: 3em; height: 1.5em;">
                             <label class="form-check-label fw-bold text-primary" for="is_available">
-                                <i class="fas fa-calendar-check me-2"></i>Available for Bookings
+                                <i class="fas fa-calendar-check me-2"></i>{{ __('Tersedia untuk Booking') }}
                             </label>
                             @error('is_available')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
-                        <div class="form-text ms-5">Toggle this switch to indicate if the technician is currently available to accept new bookings.</div>
+                        <div class="form-text ms-5">{{ __('Aktifkan switch ini untuk menunjukkan bahwa teknisi saat ini tersedia untuk menerima booking baru.') }}</div>
                     </div>
 
                     <div class="alert border-0 mb-4 p-3" style="background: rgba(78, 115, 223, 0.1); color: #4e73df; border-left: 4px solid #4e73df;">
@@ -125,18 +125,18 @@
                                 <i class="fas fa-info-circle fa-2x"></i>
                             </div>
                             <div>
-                                <h6 class="fw-bold mb-1">Important Note</h6>
-                                <p class="mb-0">A new user account will be created for this technician with the provided email and password. The technician will be assigned the "technician" role automatically.</p>
+                                <h6 class="fw-bold mb-1">{{ __('Catatan Penting') }}</h6>
+                                <p class="mb-0">{{ __('Akun pengguna baru akan dibuat untuk teknisi ini dengan email dan kata sandi yang diberikan. Teknisi akan secara otomatis diberikan peran "teknisi".') }}</p>
                             </div>
                         </div>
                     </div>
 
                     <div class="d-flex justify-content-between mt-5">
                         <a href="{{ route('technicians.index') }}" class="btn btn-outline-secondary btn-lg px-5">
-                            <i class="fas fa-times me-2"></i>Cancel
+                            <i class="fas fa-times me-2"></i>{{ __('Batal') }}
                         </a>
                         <button type="submit" class="btn btn-success btn-lg px-5">
-                            <i class="fas fa-user-plus me-2"></i>Create Technician
+                            <i class="fas fa-user-plus me-2"></i>{{ __('Buat Teknisi') }}
                         </button>
                     </div>
                 </form>

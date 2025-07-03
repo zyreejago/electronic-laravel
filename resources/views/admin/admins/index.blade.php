@@ -2,10 +2,10 @@
     <x-slot name="header">
         <div class="d-flex justify-content-between align-items-center">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                {{ __('Manage Admins') }}
+                {{ __('Kelola Admin') }}
             </h2>
             <a href="{{ route('admin.admins.create') }}" class="btn btn-primary btn-lg shadow-sm">
-                <i class="fas fa-user-plus me-2"></i>Add New Admin
+                <i class="fas fa-user-plus me-2"></i>{{ __('Tambah Admin Baru') }}
             </a>
         </div>
     </x-slot>
@@ -18,7 +18,7 @@
                         <i class="fas fa-check"></i>
                     </div>
                     <div>
-                        <strong>Success!</strong> {{ session('success') }}
+                        <strong>{{ __('Berhasil!') }}</strong> {{ session('success') }}
                     </div>
                     <button type="button" class="btn-close btn-close-white ms-auto" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
@@ -32,7 +32,7 @@
                         <i class="fas fa-exclamation-triangle"></i>
                     </div>
                     <div>
-                        <strong>Error!</strong> {{ session('error') }}
+                        <strong>{{ __('Error!') }}</strong> {{ session('error') }}
                     </div>
                     <button type="button" class="btn-close btn-close-white ms-auto" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
@@ -44,7 +44,7 @@
                 <div style="background: linear-gradient(90deg, #4e73df, #224abe);" class="text-white p-4">
                     <div class="d-flex justify-content-between align-items-center">
                         <h5 class="card-title mb-0 fw-bold">
-                            <i class="fas fa-users-cog me-2"></i>All Admins
+                            <i class="fas fa-users-cog me-2"></i>{{ __('Semua Admin') }}
                         </h5>
                     </div>
                 </div>
@@ -54,12 +54,12 @@
                     <table class="table table-hover align-middle mb-0">
                         <thead class="bg-light">
                             <tr>
-                                <th class="border-0 text-uppercase small fw-bold p-3">ID</th>
-                                <th class="border-0 text-uppercase small fw-bold p-3">NAME</th>
-                                <th class="border-0 text-uppercase small fw-bold p-3">EMAIL</th>
-                                <th class="border-0 text-uppercase small fw-bold p-3">PHONE</th>
-                                <th class="border-0 text-uppercase small fw-bold p-3">CREATED</th>
-                                <th class="border-0 text-uppercase small fw-bold p-3">ACTIONS</th>
+                                <th class="border-0 text-uppercase small fw-bold p-3">{{ __('ID') }}</th>
+                                <th class="border-0 text-uppercase small fw-bold p-3">{{ __('NAMA') }}</th>
+                                <th class="border-0 text-uppercase small fw-bold p-3">{{ __('EMAIL') }}</th>
+                                <th class="border-0 text-uppercase small fw-bold p-3">{{ __('TELEPON') }}</th>
+                                <th class="border-0 text-uppercase small fw-bold p-3">{{ __('DIBUAT') }}</th>
+                                <th class="border-0 text-uppercase small fw-bold p-3">{{ __('AKSI') }}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -99,14 +99,14 @@
                                     <td class="p-3">
                                         <div class="d-flex gap-2">
                                             <a href="{{ route('admin.admins.edit', $admin) }}" class="btn btn-warning btn-sm shadow-sm">
-                                                <i class="fas fa-edit me-1"></i> Edit
+                                                <i class="fas fa-edit me-1"></i> {{ __('Edit') }}
                                             </a>
                                             @if($admin->id !== auth()->id())
                                                 <form action="{{ route('admin.admins.destroy', $admin) }}" method="POST">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="submit" class="btn btn-danger btn-sm shadow-sm" onclick="return confirm('Are you sure you want to delete this admin?')">
-                                                        <i class="fas fa-trash-alt me-1"></i> Delete
+                                                    <button type="submit" class="btn btn-danger btn-sm shadow-sm" onclick="return confirm('{{ __('Apakah Anda yakin ingin menghapus admin ini?') }}')">
+                                                        <i class="fas fa-trash-alt me-1"></i> {{ __('Hapus') }}
                                                     </button>
                                                 </form>
                                             @endif

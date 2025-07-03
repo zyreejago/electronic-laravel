@@ -42,7 +42,7 @@
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item">
                             <a class="nav-link {{ request()->routeIs('home') ? 'active fw-bold' : '' }}" href="{{ route('home') }}">
-                                <i class="fas fa-home me-1"></i> Home
+                                <i class="fas fa-home me-1"></i> {{ __('Beranda') }}
                             </a>
                         </li>
                         
@@ -50,33 +50,33 @@
                             @if(auth()->user()->isAdmin())
                                 <li class="nav-item">
                                     <a class="nav-link {{ request()->routeIs('services.*') ? 'active fw-bold' : '' }}" href="{{ route('services.index') }}">
-                                        <i class="fas fa-cogs me-1"></i> Services
+                                        <i class="fas fa-cogs me-1"></i> {{ __('Layanan') }}
                                     </a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link {{ request()->routeIs('technicians.*') ? 'active fw-bold' : '' }}" href="{{ route('technicians.index') }}">
-                                        <i class="fas fa-users-cog me-1"></i> Technicians
+                                        <i class="fas fa-users-cog me-1"></i> {{ __('Teknisi') }}
                                     </a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link {{ request()->routeIs('service-components.*') ? 'active fw-bold' : '' }}" href="{{ route('service-components.index') }}">
-                                        <i class="fas fa-microchip me-1"></i> Components
+                                        <i class="fas fa-microchip me-1"></i> {{ __('Komponen') }}
                                     </a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link {{ request()->routeIs('admin.bookings.*') ? 'active fw-bold' : '' }}" href="{{ route('admin.bookings.index') }}">
-                                        <i class="fas fa-calendar-check me-1"></i> Bookings
+                                        <i class="fas fa-calendar-check me-1"></i> {{ __('Booking') }}
                                     </a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link {{ request()->routeIs('admin.reports') ? 'active fw-bold' : '' }}" href="{{ route('admin.reports') }}">
-                                        <i class="fas fa-chart-line me-1"></i> Reports
+                                        <i class="fas fa-chart-line me-1"></i> {{ __('Laporan') }}
                                     </a>
                                 </li>
                             @elseif(auth()->user()->isTechnician())
                                 <li class="nav-item">
                                     <a class="nav-link {{ request()->routeIs('technician.bookings.*') ? 'active fw-bold' : '' }}" href="{{ route('technician.bookings.index') }}">
-                                        <i class="fas fa-calendar-check me-1"></i> My Bookings
+                                        <i class="fas fa-calendar-check me-1"></i> {{ __('Booking Saya') }}
                                     </a>
                                 </li>
                             @else
@@ -87,12 +87,12 @@
                                 </li> -->
                                 <li class="nav-item">
                                     <a class="nav-link {{ request()->routeIs('bookings.*') ? 'active fw-bold' : '' }}" href="{{ route('bookings.index') }}">
-                                        <i class="fas fa-calendar-check me-1"></i> My Bookings
+                                        <i class="fas fa-calendar-check me-1"></i> {{ __('Booking Saya') }}
                                     </a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link {{ request()->routeIs('loyalty-points.*') ? 'active fw-bold' : '' }}" href="{{ route('loyalty-points.index') }}">
-                                        <i class="fas fa-star me-1"></i> Loyalty Points
+                                        <i class="fas fa-star me-1"></i> {{ __('Poin Loyalitas') }}
                                     </a>
                                 </li>
                             @endif
@@ -108,7 +108,7 @@
                                 <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="dropdownMenuButton">
                                     <li>
                                         <a class="dropdown-item" href="{{ route('profile.edit') }}">
-                                            <i class="fas fa-user me-2"></i> Profile
+                                            <i class="fas fa-user me-2"></i> {{ __('Profil') }}
                                         </a>
                                     </li>
                                     <li><hr class="dropdown-divider"></li>
@@ -116,7 +116,7 @@
                                         <form method="POST" action="{{ route('logout') }}">
                                             @csrf
                                             <button type="submit" class="dropdown-item text-danger">
-                                                <i class="fas fa-sign-out-alt me-2"></i> Log Out
+                                                <i class="fas fa-sign-out-alt me-2"></i> {{ __('Keluar') }}
                                             </button>
                                         </form>
                                     </li>
@@ -124,10 +124,10 @@
                             </div>
                         @else
                             <a href="{{ route('login') }}" class="btn btn-outline-primary me-2">
-                                <i class="fas fa-sign-in-alt me-1"></i> Log in
+                                <i class="fas fa-sign-in-alt me-1"></i> {{ __('Masuk') }}
                             </a>
                             <a href="{{ route('register') }}" class="btn btn-primary">
-                                <i class="fas fa-user-plus me-1"></i> Register
+                                <i class="fas fa-user-plus me-1"></i> {{ __('Daftar') }}
                             </a>
                         @endauth
                     </div>
@@ -188,7 +188,7 @@
             <div class="container">
                 <div class="row">
                     <div class="col-md-6">
-                        <p class="mb-0">&copy; {{ date('Y') }} {{ config('app.name', 'Service App') }}. All rights reserved.</p>
+                        <p class="mb-0">&copy; {{ date('Y') }} {{ config('app.name', 'Service App') }}. {{ __('Semua hak dilindungi.') }}</p>
                     </div>
                     <div class="col-md-6 text-md-end">
                         <div class="d-flex justify-content-md-end gap-3">

@@ -15,7 +15,7 @@
                     <div class="card-header p-0">
                         <div style="background: linear-gradient(90deg, #4e73df, #224abe);" class="text-white p-4">
                             <h5 class="card-title mb-0 fw-bold">
-                                <i class="fas fa-user-circle me-2"></i>Profile Information
+                                <i class="fas fa-user-circle me-2"></i>{{ __('Informasi Profil') }}
                             </h5>
                         </div>
                     </div>
@@ -31,7 +31,7 @@
                                         <i class="fas fa-check"></i>
                                     </div>
                                     <div>
-                                        <strong>Success!</strong> {{ session('success') }}
+                                        <strong>{{ __('Berhasil!') }}</strong> {{ session('success') }}
                                     </div>
                                     <button type="button" class="btn-close btn-close-white ms-auto" data-bs-dismiss="alert" aria-label="Close"></button>
                                 </div>
@@ -46,7 +46,7 @@
                                 <div class="col-md-6">
                                     <div class="mb-3">
                                         <label for="name" class="form-label fw-bold text-primary">
-                                            <i class="fas fa-user me-2"></i>Name
+                                            <i class="fas fa-user me-2"></i>{{ __('Nama') }}
                                         </label>
                                         <input type="text" class="form-control form-control-lg border-0 shadow-sm @error('name') is-invalid @enderror" 
                                                id="name" name="name" value="{{ old('name', $user->name) }}" required autofocus autocomplete="name">
@@ -72,7 +72,7 @@
                                 <div class="col-md-6">
                                     <div class="mb-3">
                                         <label for="phone_number" class="form-label fw-bold text-primary">
-                                            <i class="fas fa-phone me-2"></i>Phone Number
+                                            <i class="fas fa-phone me-2"></i>{{ __('Nomor Telepon') }}
                                         </label>
                                         <input type="text" class="form-control form-control-lg border-0 shadow-sm @error('phone_number') is-invalid @enderror" 
                                                id="phone_number" name="phone_number" value="{{ old('phone_number', $user->phone_number) }}" autocomplete="tel">
@@ -85,7 +85,7 @@
                                 <div class="col-md-6">
                                     <div class="mb-3">
                                         <label for="address" class="form-label fw-bold text-primary">
-                                            <i class="fas fa-map-marker-alt me-2"></i>Address
+                                            <i class="fas fa-map-marker-alt me-2"></i>{{ __('Alamat') }}
                                         </label>
                                         <input type="text" class="form-control form-control-lg border-0 shadow-sm @error('address') is-invalid @enderror" 
                                                id="address" name="address" value="{{ old('address', $user->address) }}" autocomplete="street-address">
@@ -102,15 +102,15 @@
                                         <i class="fas fa-info-circle fa-2x"></i>
                                     </div>
                                     <div>
-                                        <h6 class="fw-bold mb-1">Profile Information</h6>
-                                        <p class="mb-0">Your profile information is used to personalize your experience and for communication regarding your bookings and services.</p>
+                                        <h6 class="fw-bold mb-1">{{ __('Informasi Profil') }}</h6>
+                                        <p class="mb-0">{{ __('Informasi profil Anda digunakan untuk mempersonalisasi pengalaman dan komunikasi terkait booking dan layanan.') }}</p>
                                     </div>
                                 </div>
                             </div>
 
                             <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
                                 <button type="submit" class="btn btn-primary btn-lg px-5">
-                                    <i class="fas fa-save me-2"></i>Save Changes
+                                    <i class="fas fa-save me-2"></i>{{ __('Simpan Perubahan') }}
                                 </button>
                             </div>
                         </form>
@@ -125,7 +125,7 @@
                     <div class="card-header p-0">
                         <div style="background: linear-gradient(90deg, #1cc88a, #13855c);" class="text-white p-4">
                             <h5 class="card-title mb-0 fw-bold">
-                                <i class="fas fa-lock me-2"></i>Update Password
+                                <i class="fas fa-lock me-2"></i>{{ __('Update Kata Sandi') }}
                             </h5>
                         </div>
                     </div>
@@ -135,7 +135,7 @@
                         </p>
                         <div class="d-grid">
                             <a href="{{ route('password.edit') }}" class="btn btn-success btn-lg">
-                                <i class="fas fa-key me-2"></i>Change Password
+                                <i class="fas fa-key me-2"></i>{{ __('Ubah Kata Sandi') }}
                             </a>
                         </div>
                     </div>
@@ -146,7 +146,7 @@
                     <div class="card-header p-0">
                         <div style="background: linear-gradient(90deg, #e74a3b, #be2617);" class="text-white p-4">
                             <h5 class="card-title mb-0 fw-bold">
-                                <i class="fas fa-trash-alt me-2"></i>Delete Account
+                                <i class="fas fa-trash-alt me-2"></i>{{ __('Hapus Akun') }}
                             </h5>
                         </div>
                     </div>
@@ -156,7 +156,7 @@
                         </p>
                         <div class="d-grid">
                             <button type="button" class="btn btn-danger btn-lg" data-bs-toggle="modal" data-bs-target="#deleteAccountModal">
-                                <i class="fas fa-user-slash me-2"></i>Delete Account
+                                <i class="fas fa-user-slash me-2"></i>{{ __('Hapus Akun') }}
                             </button>
                         </div>
                     </div>
@@ -171,7 +171,7 @@
             <div class="modal-content border-0 shadow rounded-4 overflow-hidden">
                 <div class="modal-header text-white p-4 border-bottom-0" style="background: linear-gradient(135deg, #e74a3b, #be2617);">
                     <h5 class="modal-title fw-bold" id="deleteAccountModalLabel">
-                        <i class="fas fa-exclamation-triangle me-2"></i>Delete Account
+                        <i class="fas fa-exclamation-triangle me-2"></i>{{ __('Hapus Akun') }}
                     </h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
@@ -182,8 +182,8 @@
                                 <i class="fas fa-exclamation-circle fa-2x"></i>
                             </div>
                             <div>
-                                <h6 class="fw-bold mb-1">Warning!</h6>
-                                <p class="mb-0">This action cannot be undone. All your data will be permanently deleted.</p>
+                                <h6 class="fw-bold mb-1">{{ __('Peringatan!') }}</h6>
+                                <p class="mb-0">{{ __('Tindakan ini tidak dapat dibatalkan. Semua data Anda akan dihapus secara permanen.') }}</p>
                             </div>
                         </div>
                     </div>
@@ -197,9 +197,9 @@
                         @method('delete')
                         
                         <div class="mb-4">
-                            <label for="password" class="form-label fw-bold text-danger">Password Confirmation</label>
+                            <label for="password" class="form-label fw-bold text-danger">{{ __('Konfirmasi Kata Sandi') }}</label>
                             <input type="password" class="form-control form-control-lg border-0 shadow-sm @error('password', 'userDeletion') is-invalid @enderror" 
-                                   id="password" name="password" placeholder="Enter your password" required>
+                                   id="password" name="password" placeholder="{{ __('Masukkan kata sandi Anda') }}" required>
                             @error('password', 'userDeletion')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -207,10 +207,10 @@
                         
                         <div class="d-flex justify-content-end gap-2">
                             <button type="button" class="btn btn-outline-secondary btn-lg" data-bs-dismiss="modal">
-                                <i class="fas fa-times me-2"></i>Cancel
+                                <i class="fas fa-times me-2"></i>{{ __('Batal') }}
                             </button>
                             <button type="submit" class="btn btn-danger btn-lg">
-                                <i class="fas fa-trash-alt me-2"></i>Delete Account
+                                <i class="fas fa-trash-alt me-2"></i>{{ __('Hapus Akun') }}
                             </button>
                         </div>
                     </form>

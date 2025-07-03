@@ -2,10 +2,10 @@
     <x-slot name="header">
         <div class="d-flex justify-content-between align-items-center">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                {{ __('Change Password - ') . $customer->name }}
+                {{ __('Ubah Kata Sandi - ') . $customer->name }}
             </h2>
             <a href="{{ route('admin.customers.show', $customer) }}" class="btn btn-secondary btn-lg shadow-sm">
-                <i class="fas fa-arrow-left me-2"></i>Back to Customer
+                <i class="fas fa-arrow-left me-2"></i>{{ __('Kembali ke Pelanggan') }}
             </a>
         </div>
     </x-slot>
@@ -18,7 +18,7 @@
                         <i class="fas fa-exclamation-triangle"></i>
                     </div>
                     <div>
-                        <strong>Error!</strong> Please check the form below.
+                        <strong>{{ __('Error!') }}</strong> {{ __('Silakan periksa form di bawah ini.') }}
                         <ul class="mb-0 mt-2">
                             @foreach($errors->all() as $error)
                                 <li>{{ $error }}</li>
@@ -31,7 +31,7 @@
 
         <div class="card border-0 shadow rounded-4">
             <div class="card-header bg-warning text-dark rounded-top-4">
-                <h5 class="mb-0"><i class="fas fa-key me-2"></i>Change Customer Password</h5>
+                <h5 class="mb-0"><i class="fas fa-key me-2"></i>{{ __('Ubah Kata Sandi Pelanggan') }}</h5>
             </div>
             <div class="card-body p-4">
                 <form method="POST" action="{{ route('admin.customers.change-password', $customer) }}">
@@ -41,7 +41,7 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label for="password" class="form-label">New Password</label>
+                                <label for="password" class="form-label">{{ __('Kata Sandi Baru') }}</label>
                                 <input type="password" class="form-control @error('password') is-invalid @enderror" 
                                        id="password" name="password" required>
                                 @error('password')
@@ -52,7 +52,7 @@
                         
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label for="password_confirmation" class="form-label">Confirm New Password</label>
+                                <label for="password_confirmation" class="form-label">{{ __('Konfirmasi Kata Sandi Baru') }}</label>
                                 <input type="password" class="form-control @error('password_confirmation') is-invalid @enderror" 
                                        id="password_confirmation" name="password_confirmation" required>
                                 @error('password_confirmation')
@@ -66,17 +66,17 @@
                         <form method="POST" action="{{ route('admin.customers.reset-password', $customer) }}" style="display: inline;">
                             @csrf
                             @method('PUT')
-                            <button type="submit" class="btn btn-danger" onclick="return confirm('Reset password to default (password123)?')">
-                                <i class="fas fa-undo me-2"></i>Reset to Default
+                            <button type="submit" class="btn btn-danger" onclick="return confirm('{{ __('Reset kata sandi ke default (password123)?') }}')">
+                                <i class="fas fa-undo me-2"></i>{{ __('Reset ke Default') }}
                             </button>
                         </form>
                         
                         <div>
                             <a href="{{ route('admin.customers.show', $customer) }}" class="btn btn-secondary me-2">
-                                <i class="fas fa-times me-2"></i>Cancel
+                                <i class="fas fa-times me-2"></i>{{ __('Batal') }}
                             </a>
                             <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-save me-2"></i>Change Password
+                                <i class="fas fa-save me-2"></i>{{ __('Ubah Kata Sandi') }}
                             </button>
                         </div>
                     </div>

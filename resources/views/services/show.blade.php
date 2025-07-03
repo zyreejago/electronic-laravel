@@ -7,19 +7,19 @@
             @if(auth()->user()->isAdmin())
                 <div class="d-flex gap-3">
                     <a href="{{ route('services.edit', $service) }}" class="btn btn-warning btn-lg shadow-sm">
-                        <i class="fas fa-edit me-2"></i>{{ __('Edit Service') }}
+                        <i class="fas fa-edit me-2"></i>{{ __('Edit Layanan') }}
                     </a>
                     <form action="{{ route('services.destroy', $service) }}" method="POST">
                         @csrf
                         @method('DELETE')
-                        <button type="submit" class="btn btn-danger btn-lg shadow-sm" onclick="return confirm('Are you sure you want to delete this service?')">
-                            <i class="fas fa-trash-alt me-2"></i>{{ __('Delete Service') }}
+                        <button type="submit" class="btn btn-danger btn-lg shadow-sm" onclick="return confirm('{{ __('Apakah Anda yakin ingin menghapus layanan ini?') }}')">
+                            <i class="fas fa-trash-alt me-2"></i>{{ __('Hapus Layanan') }}
                         </button>
                     </form>
                 </div>
             @else
                 <a href="{{ route('bookings.create', ['service' => $service->id]) }}" class="btn btn-primary btn-lg shadow-sm">
-                    <i class="fas fa-calendar-plus me-2"></i>{{ __('Book Now') }}
+                    <i class="fas fa-calendar-plus me-2"></i>{{ __('Booking Sekarang') }}
                 </a>
             @endif
         </div>
@@ -32,7 +32,7 @@
                     <div class="card-header p-0">
                         <div style="background: linear-gradient(90deg, #4e73df, #224abe);" class="text-white p-4">
                             <h5 class="card-title mb-0 fw-bold">
-                                <i class="fas fa-info-circle me-2"></i>{{ __('Service Details') }}
+                                <i class="fas fa-info-circle me-2"></i>{{ __('Detail Layanan') }}
                             </h5>
                         </div>
                     </div>
@@ -43,7 +43,7 @@
                             </div>
                             <div>
                                 <h4 class="fw-bold mb-1">{{ $service->name }}</h4>
-                                <div class="text-muted">Electronic Service</div>
+                                <div class="text-muted">{{ __('Layanan Elektronik') }}</div>
                             </div>
                         </div>
 
@@ -56,7 +56,7 @@
                             </div>
                             <div class="list-group-item border-0 px-0 py-3 d-flex justify-content-between">
                                 <div class="text-muted">
-                                    <i class="fas fa-money-bill-wave me-2"></i>{{ __('Base Price') }}:
+                                    <i class="fas fa-money-bill-wave me-2"></i>{{ __('Harga Dasar') }}:
                                 </div>
                                 <span class="fw-bold">Rp {{ number_format($service->price, 0, ',', '.') }}</span>
                             </div>
@@ -71,7 +71,7 @@
                                     <i class="fas fa-check-circle me-2"></i>{{ __('Status') }}:
                                 </div>
                                 <span class="badge rounded-pill px-3 py-2 fw-bold {{ $service->is_available ? 'bg-success' : 'bg-danger' }}">
-                                    {{ $service->is_available ? 'Available' : 'Not Available' }}
+                                    {{ $service->is_available ? __('Tersedia') : __('Tidak Tersedia') }}
                                 </span>
                             </div>
                         </div>
@@ -97,8 +97,8 @@
                                     <i class="fas fa-info-circle fa-2x"></i>
                                 </div>
                                 <div>
-                                    <h6 class="fw-bold mb-1">Service Information</h6>
-                                    <p class="mb-0">This service is performed by our qualified technicians. The actual duration may vary depending on the complexity of the issue.</p>
+                                    <h6 class="fw-bold mb-1">{{ __('Informasi Layanan') }}</h6>
+                                    <p class="mb-0">{{ __('Layanan ini dilakukan oleh teknisi berkualitas kami. Durasi aktual dapat bervariasi tergantung pada kompleksitas masalah.') }}</p>
                                 </div>
                             </div>
                         </div>
@@ -112,7 +112,7 @@
                 <div class="card-header p-0">
                     <div style="background: linear-gradient(90deg, #36b9cc, #258391);" class="text-white p-4">
                         <h5 class="card-title mb-0 fw-bold">
-                            <i class="fas fa-history me-2"></i>{{ __('Recent Bookings') }}
+                            <i class="fas fa-history me-2"></i>{{ __('Booking Terbaru') }}
                         </h5>
                     </div>
                 </div>
@@ -121,10 +121,10 @@
                         <table class="table table-hover align-middle mb-0">
                             <thead class="bg-light">
                                 <tr>
-                                    <th class="border-0 text-uppercase small fw-bold p-3">{{ __('Customer') }}</th>
-                                    <th class="border-0 text-uppercase small fw-bold p-3">{{ __('Status') }}</th>
-                                    <th class="border-0 text-uppercase small fw-bold p-3">{{ __('Scheduled At') }}</th>
-                                    <th class="border-0 text-uppercase small fw-bold p-3">{{ __('Total Price') }}</th>
+                                    <th class="border-0 text-uppercase small fw-bold p-3">{{ __('PELANGGAN') }}</th>
+                                    <th class="border-0 text-uppercase small fw-bold p-3">{{ __('STATUS') }}</th>
+                                    <th class="border-0 text-uppercase small fw-bold p-3">{{ __('TANGGAL') }}</th>
+                                    <th class="border-0 text-uppercase small fw-bold p-3">{{ __('TOTAL HARGA') }}</th>
                                 </tr>
                             </thead>
                             <tbody>

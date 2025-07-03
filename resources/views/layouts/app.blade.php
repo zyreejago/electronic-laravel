@@ -50,60 +50,60 @@
                             @auth
                                 @if(auth()->user()->isAdmin())
                                 <li class="nav-item">
-                                    <a class="nav-link {{ request()->routeIs('services.*') ? 'active fw-bold' : '' }}" href="{{ route('services.index') }}">
-                                        <i class="fas fa-cogs me-1"></i> Services
+                                    <a class="nav-link {{ request()->routeIs('admin.services.*') ? 'active fw-bold' : '' }}" href="{{ route('admin.services.index') }}">
+                                        <i class="fas fa-tools me-1"></i> {{ __('Layanan') }}
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link {{ request()->routeIs('technicians.*') ? 'active fw-bold' : '' }}" href="{{ route('technicians.index') }}">
-                                        <i class="fas fa-users-cog me-1"></i> Technicians
+                                    <a class="nav-link {{ request()->routeIs('admin.technicians.*') ? 'active fw-bold' : '' }}" href="{{ route('admin.technicians.index') }}">
+                                        <i class="fas fa-users-cog me-1"></i> {{ __('Teknisi') }}
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link {{ request()->routeIs('service-components.*') ? 'active fw-bold' : '' }}" href="{{ route('service-components.index') }}">
-                                        <i class="fas fa-microchip me-1"></i> Components
+                                    <a class="nav-link {{ request()->routeIs('admin.service-components.*') ? 'active fw-bold' : '' }}" href="{{ route('admin.service-components.index') }}">
+                                        <i class="fas fa-cogs me-1"></i> {{ __('Komponen') }}
                                     </a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link {{ request()->routeIs('admin.bookings.*') ? 'active fw-bold' : '' }}" href="{{ route('admin.bookings.index') }}">
-                                        <i class="fas fa-calendar-check me-1"></i> Bookings
+                                        <i class="fas fa-calendar-check me-1"></i> {{ __('Pemesanan') }}
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link {{ request()->routeIs('admin.reports') ? 'active fw-bold' : '' }}" href="{{ route('admin.reports') }}">
-                                        <i class="fas fa-chart-line me-1"></i> Reports
+                                    <a class="nav-link {{ request()->routeIs('admin.reports.*') ? 'active fw-bold' : '' }}" href="{{ route('admin.reports.index') }}">
+                                        <i class="fas fa-chart-bar me-1"></i> {{ __('Laporan') }}
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link {{ request()->routeIs('admin.admins.*') ? 'active fw-bold' : '' }}" href="{{ route('admin.admins.index') }}">
-                                        <i class="fas fa-user-shield me-1"></i> Admins
+                                    <a class="nav-link {{ request()->routeIs('admin.users.*') ? 'active fw-bold' : '' }}" href="{{ route('admin.users.index') }}">
+                                        <i class="fas fa-users me-1"></i> {{ __('Admin') }}
                                     </a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link {{ request()->routeIs('admin.customers.*') ? 'active fw-bold' : '' }}" href="{{ route('admin.customers.index') }}">
-                                        <i class="fas fa-users me-1"></i> Customers
+                                        <i class="fas fa-users me-1"></i> {{ __('Pelanggan') }}
                                     </a>
                                 </li>
                                 @elseif(auth()->user()->isTechnician())
                                 <li class="nav-item">
                                     <a class="nav-link {{ request()->routeIs('technician.bookings.*') ? 'active fw-bold' : '' }}" href="{{ route('technician.bookings.index') }}">
-                                        <i class="fas fa-calendar-check me-1"></i> My Bookings
+                                        <i class="fas fa-calendar-check me-1"></i> {{ __('Pemesanan Saya') }}
                                     </a>
                                 </li>
                                 @else
                                 <li class="nav-item">
                                     <a class="nav-link {{ request()->routeIs('services.*') ? 'active fw-bold' : '' }}" href="{{ route('services.index') }}">
-                                        <i class="fas fa-tools me-1"></i> Services
+                                        <i class="fas fa-tools me-1"></i> {{ __('Layanan') }}
                                     </a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link {{ request()->routeIs('bookings.*') ? 'active fw-bold' : '' }}" href="{{ route('bookings.index') }}">
-                                        <i class="fas fa-calendar-check me-1"></i> My Bookings
+                                        <i class="fas fa-calendar-check me-1"></i> {{ __('Pemesanan Saya') }}
                                     </a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link {{ request()->routeIs('loyalty-points.*') ? 'active fw-bold' : '' }}" href="{{ route('loyalty-points.index') }}">
-                                        <i class="fas fa-star me-1"></i> Loyalty Points
+                                        <i class="fas fa-star me-1"></i> {{ __('Poin Loyalitas') }}
                                     </a>
                                 </li>
                                 @endif
@@ -119,7 +119,7 @@
                                 <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="dropdownMenuButton">
                                     <li>
                                         <a class="dropdown-item" href="{{ route('profile.edit') }}">
-                                            <i class="fas fa-user me-2"></i> Profile
+                                            <i class="fas fa-user me-2"></i> {{ __('Profil') }}
                                         </a>
                                     </li>
                                     <li><hr class="dropdown-divider"></li>
@@ -127,7 +127,7 @@
                                         <form method="POST" action="{{ route('logout') }}">
                                             @csrf
                                             <button type="submit" class="dropdown-item text-danger">
-                                                <i class="fas fa-sign-out-alt me-2"></i> Log Out
+                                                <i class="fas fa-sign-out-alt me-2"></i> {{ __('Keluar') }}
                                             </button>
                                         </form>
                                     </li>
@@ -135,10 +135,10 @@
             </div>
                         @else
                             <a href="{{ route('login') }}" class="btn btn-outline-primary me-2">
-                                <i class="fas fa-sign-in-alt me-1"></i> Log in
+                                <i class="fas fa-sign-in-alt me-1"></i> {{ __('Masuk') }}
                             </a>
                             <a href="{{ route('register') }}" class="btn btn-primary">
-                                <i class="fas fa-user-plus me-1"></i> Register
+                                <i class="fas fa-user-plus me-1"></i> {{ __('Daftar') }}
                             </a>
                     @endauth
                 </div>
@@ -164,7 +164,7 @@
                             <i class="fas fa-check"></i>
                         </div>
                         <div>
-                            <strong>Success!</strong> {{ session('success') }}
+                            <strong>{{ __('Berhasil!') }}</strong> {{ session('success') }}
                         </div>
                         <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
@@ -180,7 +180,7 @@
                             <i class="fas fa-exclamation-triangle"></i>
                         </div>
                         <div>
-                            <strong>Error!</strong> {{ session('error') }}
+                            <strong>{{ __('Error!') }}</strong> {{ session('error') }}
                         </div>
                         <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
@@ -199,7 +199,7 @@
             <div class="container">
                 <div class="row">
                     <div class="col-md-6">
-                        <p class="mb-0">&copy; {{ date('Y') }} {{ config('app.name', 'Service App') }}. All rights reserved.</p>
+                        <p class="mb-0">&copy; {{ date('Y') }} {{ config('app.name', 'Service App') }}. {{ __('Semua hak dilindungi.') }}</p>
                     </div>
                     <div class="col-md-6 text-md-end">
                         <div class="d-flex justify-content-md-end gap-3">

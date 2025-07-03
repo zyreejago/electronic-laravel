@@ -12,8 +12,8 @@
                             <i class="fas fa-tachometer-alt fa-3x"></i>
                         </div>
                         <div>
-                            <h2 class="fw-bold mb-1">Dashboard Customer</h2>
-                            <p class="mb-0 fs-5">Selamat datang, {{ auth()->user()->name }}!</p>
+                            <h2 class="fw-bold mb-1">{{ __('Dashboard Pelanggan') }}</h2>
+                            <p class="mb-0 fs-5">{{ __('Selamat datang') }}, {{ auth()->user()->name }}!</p>
                         </div>
                     </div>
                 </div>
@@ -32,7 +32,7 @@
                         </div>
                         <div>
                             <h3 class="fw-bold mb-0 text-primary">{{ $totalBookings }}</h3>
-                            <p class="text-muted mb-0">Total Booking</p>
+                            <p class="text-muted mb-0">{{ __('Total Booking') }}</p>
                         </div>
                     </div>
                 </div>
@@ -80,7 +80,7 @@
                         </div>
                         <div>
                             <h3 class="fw-bold mb-0 text-info">Rp {{ number_format($totalSpent, 0, ',', '.') }}</h3>
-                            <p class="text-muted mb-0">Total Pengeluaran</p>
+                            <p class="text-muted mb-0">{{ __('Total Pengeluaran') }}</p>
                         </div>
                     </div>
                 </div>
@@ -95,10 +95,10 @@
                 <div class="card-header bg-white border-0 p-4">
                     <div class="d-flex justify-content-between align-items-center">
                         <h5 class="fw-bold mb-0">
-                            <i class="fas fa-history me-2 text-primary"></i>Booking Terbaru
+                            <i class="fas fa-history me-2 text-primary"></i>{{ __('Booking Terbaru') }}
                         </h5>
                         <a href="{{ route('customer.bookings.index') }}" class="btn btn-outline-primary btn-sm">
-                            Lihat Semua
+                            {{ __('Lihat Semua') }}
                         </a>
                     </div>
                 </div>
@@ -134,7 +134,7 @@
                     @empty
                         <div class="p-4 text-center text-muted">
                             <i class="fas fa-calendar-times fa-3x mb-3"></i>
-                            <p class="mb-0">Belum ada booking</p>
+                            <p class="mb-0">{{ __('Belum ada booking') }}</p>
                         </div>
                     @endforelse
                 </div>
@@ -149,10 +149,10 @@
                 <div class="card-header bg-white border-0 p-4">
                     <div class="d-flex justify-content-between align-items-center">
                         <h6 class="fw-bold mb-0">
-                            <i class="fas fa-exclamation-triangle me-2 text-warning"></i>Pekerjaan Tambahan
+                            <i class="fas fa-exclamation-triangle me-2 text-warning"></i>{{ __('Pekerjaan Tambahan') }}
                         </h6>
                         <a href="{{ route('customer.additional-work.index') }}" class="btn btn-outline-warning btn-sm">
-                            Lihat Semua
+                            {{ __('Lihat Semua') }}
                         </a>
                     </div>
                 </div>
@@ -162,7 +162,7 @@
                             <h6 class="fw-bold mb-1">{{ $request->title }}</h6>
                             <p class="text-muted small mb-2">{{ Str::limit($request->description, 60) }}</p>
                             <div class="d-flex justify-content-between align-items-center">
-                                <span class="badge bg-warning">Menunggu Respon</span>
+                                <span class="badge bg-warning">{{ __('Menunggu Respon') }}</span>
                                 <span class="fw-bold text-primary">Rp {{ number_format($request->estimated_cost, 0, ',', '.') }}</span>
                             </div>
                         </div>
@@ -176,10 +176,10 @@
                 <div class="card-header bg-white border-0 p-4">
                     <div class="d-flex justify-content-between align-items-center">
                         <h6 class="fw-bold mb-0">
-                            <i class="fas fa-bell me-2 text-info"></i>Notifikasi Terbaru
+                            <i class="fas fa-bell me-2 text-info"></i>{{ __('Notifikasi Terbaru') }}
                         </h6>
                         <a href="{{ route('notifications.index') }}" class="btn btn-outline-info btn-sm">
-                            Lihat Semua
+                            {{ __('Lihat Semua') }}
                         </a>
                     </div>
                 </div>
@@ -191,7 +191,7 @@
                                     <i class="fas fa-info-circle"></i>
                                 </div>
                                 <div class="flex-grow-1">
-                                    <h6 class="fw-bold mb-1">{{ $notification->data['title'] ?? 'Notifikasi' }}</h6>
+                                    <h6 class="fw-bold mb-1">{{ $notification->data['title'] ?? __('Notifikasi') }}</h6>
                                     <p class="text-muted small mb-1">{{ Str::limit($notification->data['message'] ?? '', 80) }}</p>
                                     <small class="text-muted">{{ $notification->created_at->diffForHumans() }}</small>
                                 </div>
@@ -200,7 +200,7 @@
                     @empty
                         <div class="p-3 text-center text-muted">
                             <i class="fas fa-bell-slash fa-2x mb-2"></i>
-                            <p class="mb-0 small">Belum ada notifikasi</p>
+                            <p class="mb-0 small">{{ __('Belum ada notifikasi') }}</p>
                         </div>
                     @endforelse
                 </div>
@@ -221,12 +221,12 @@
                     <div class="row g-3">
                         <div class="col-md-3">
                             <a href="{{ route('bookings.create') }}" class="btn btn-primary w-100 py-3">
-                                <i class="fas fa-plus me-2"></i>Booking Baru
+                                <i class="fas fa-plus me-2"></i>{{ __('Booking Baru') }}
                             </a>
                         </div>
                         <div class="col-md-3">
                             <a href="{{ route('customer.bookings.history') }}" class="btn btn-outline-primary w-100 py-3">
-                                <i class="fas fa-history me-2"></i>Riwayat Service
+                                <i class="fas fa-history me-2"></i>{{ __('Riwayat Service') }}
                             </a>
                         </div>
                         <div class="col-md-3">
@@ -236,7 +236,7 @@
                         </div>
                         <div class="col-md-3">
                             <a href="{{ route('profile.edit') }}" class="btn btn-outline-secondary w-100 py-3">
-                                <i class="fas fa-user-edit me-2"></i>Edit Profil
+                                <i class="fas fa-user-edit me-2"></i>{{ __('Edit Profil') }}
                             </a>
                         </div>
                     </div>

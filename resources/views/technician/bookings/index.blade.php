@@ -2,7 +2,7 @@
     <x-slot name="header">
         <div class="d-flex justify-content-between align-items-center">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                {{ __('Technician Bookings') }}
+                {{ __('Booking Teknisi') }}
             </h2>
         </div>
     </x-slot>
@@ -15,7 +15,7 @@
                         <i class="fas fa-check"></i>
                     </div>
                     <div>
-                        <strong>Success!</strong> {{ session('success') }}
+                        <strong>{{ __('Berhasil!') }}</strong> {{ session('success') }}
                     </div>
                     <button type="button" class="btn-close btn-close-white ms-auto" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
@@ -36,7 +36,7 @@
                     <div class="col-md-4">
                         <label for="statusFilter" class="form-label fw-bold text-success">Status</label>
                         <select class="form-select form-select-lg border-0 shadow-sm" id="statusFilter" name="status">
-                            <option value="">All Statuses</option>
+                            <option value="">{{ __('Semua Status') }}</option>
                             <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Pending</option>
                             <option value="in_progress" {{ request('status') == 'in_progress' ? 'selected' : '' }}>In Progress</option>
                             <option value="completed" {{ request('status') == 'completed' ? 'selected' : '' }}>Completed</option>
@@ -46,7 +46,7 @@
                     <div class="col-md-4">
                         <label for="dateFilter" class="form-label fw-bold text-success">Date Range</label>
                         <select class="form-select form-select-lg border-0 shadow-sm" id="dateFilter" name="date_range">
-                            <option value="">All Time</option>
+                            <option value="">{{ __('Sepanjang Waktu') }}</option>
                             <option value="today" {{ request('date_range') == 'today' ? 'selected' : '' }}>Today</option>
                             <option value="tomorrow" {{ request('date_range') == 'tomorrow' ? 'selected' : '' }}>Tomorrow</option>
                             <option value="week" {{ request('date_range') == 'week' ? 'selected' : '' }}>This Week</option>

@@ -2,10 +2,10 @@
     <x-slot name="header">
         <div class="d-flex justify-content-between align-items-center">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                {{ __('Edit Customer') }}
+                {{ __('Edit Pelanggan') }}
             </h2>
             <a href="{{ route('admin.customers.index') }}" class="btn btn-secondary btn-lg shadow-sm">
-                <i class="fas fa-arrow-left me-2"></i>Back to List
+                <i class="fas fa-arrow-left me-2"></i>{{ __('Kembali ke Daftar') }}
             </a>
         </div>
     </x-slot>
@@ -18,7 +18,7 @@
                         <i class="fas fa-check"></i>
                     </div>
                     <div>
-                        <strong>Success!</strong> {{ session('success') }}
+                        <strong>{{ __('Berhasil!') }}</strong> {{ session('success') }}
                     </div>
                     <button type="button" class="btn-close btn-close-white ms-auto" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
@@ -32,7 +32,7 @@
                         <i class="fas fa-exclamation-triangle"></i>
                     </div>
                     <div>
-                        <strong>Error!</strong> Please check the form below.
+                        <strong>{{ __('Error!') }}</strong> {{ __('Silakan periksa form di bawah ini.') }}
                         <ul class="mb-0 mt-2">
                             @foreach($errors->all() as $error)
                                 <li>{{ $error }}</li>
@@ -46,7 +46,7 @@
 
         <div class="card border-0 shadow rounded-4">
             <div class="card-header bg-primary text-white rounded-top-4">
-                <h5 class="mb-0"><i class="fas fa-user-edit me-2"></i>Edit Customer Information</h5>
+                <h5 class="mb-0"><i class="fas fa-user-edit me-2"></i>{{ __('Edit Informasi Pelanggan') }}</h5>
             </div>
             <div class="card-body p-4">
                 <form method="POST" action="{{ route('admin.customers.update', $customer) }}">
@@ -56,7 +56,7 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label for="name" class="form-label">Full Name</label>
+                                <label for="name" class="form-label">{{ __('Nama Lengkap') }}</label>
                                 <input type="text" class="form-control @error('name') is-invalid @enderror" 
                                        id="name" name="name" value="{{ old('name', $customer->name) }}" required>
                                 @error('name')
@@ -67,7 +67,7 @@
                         
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label for="email" class="form-label">Email Address</label>
+                                <label for="email" class="form-label">{{ __('Alamat Email') }}</label>
                                 <input type="email" class="form-control @error('email') is-invalid @enderror" 
                                        id="email" name="email" value="{{ old('email', $customer->email) }}" required>
                                 @error('email')
@@ -80,7 +80,7 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label for="phone" class="form-label">Phone Number</label>
+                                <label for="phone" class="form-label">{{ __('Nomor Telepon') }}</label>
                                 <input type="text" class="form-control @error('phone') is-invalid @enderror" 
                                        id="phone" name="phone" value="{{ old('phone', $customer->phone_number) }}" required>
                                 @error('phone')
@@ -91,7 +91,7 @@
                         
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label class="form-label">Member Since</label>
+                                <label class="form-label">{{ __('Anggota Sejak') }}</label>
                                 <input type="text" class="form-control" value="{{ $customer->created_at->format('d M Y') }}" readonly>
                             </div>
                         </div>
@@ -99,14 +99,14 @@
                     
                     <div class="d-flex justify-content-between">
                         <a href="{{ route('admin.customers.show', $customer) }}" class="btn btn-info">
-                            <i class="fas fa-eye me-2"></i>View Details
+                            <i class="fas fa-eye me-2"></i>{{ __('Lihat Detail') }}
                         </a>
                         <div>
                             <a href="{{ route('admin.customers.index') }}" class="btn btn-secondary me-2">
-                                <i class="fas fa-times me-2"></i>Cancel
+                                <i class="fas fa-times me-2"></i>{{ __('Batal') }}
                             </a>
                             <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-save me-2"></i>Update Customer
+                                <i class="fas fa-save me-2"></i>{{ __('Perbarui Pelanggan') }}
                             </button>
                         </div>
                     </div>

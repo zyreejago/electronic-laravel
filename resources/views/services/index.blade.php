@@ -2,11 +2,11 @@
     <x-slot name="header">
         <div class="d-flex justify-content-between align-items-center">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                {{ __('Manage Services') }}
+                {{ __('Kelola Layanan') }}
             </h2>
             @if(auth()->user() && auth()->user()->role === 'admin')
-                <a href="{{ route('services.create') }}" class="btn btn-primary btn-lg shadow-sm">
-                    <i class="fas fa-plus-circle me-2"></i>Add New Service
+                <a href="{{ route('services.create') }}" class="btn btn-primary">
+                    <i class="fas fa-plus me-2"></i>{{ __('Tambah Layanan') }}
                 </a>
             @endif
         </div>
@@ -20,7 +20,7 @@
                         <i class="fas fa-check"></i>
                     </div>
                     <div>
-                        <strong>Success!</strong> {{ session('success') }}
+                        <strong>{{ __('Berhasil!') }}</strong> {{ session('success') }}
                     </div>
                     <button type="button" class="btn-close btn-close-white ms-auto" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
@@ -31,9 +31,7 @@
             <div class="card-header p-0">
                 <div style="background: linear-gradient(90deg, #4e73df, #224abe);" class="text-white p-4">
                     <div class="d-flex justify-content-between align-items-center">
-                        <h5 class="card-title mb-0 fw-bold">
-                            <i class="fas fa-cogs me-2"></i>All Services
-                        </h5>
+                        <h5 class="card-title mb-0 fw-bold">{{ __('Semua Layanan') }}</h5>
                     </div>
                 </div>
             </div>
@@ -43,11 +41,11 @@
                         <thead class="bg-light">
                             <tr>
                                 <th class="border-0 text-uppercase small fw-bold p-3">ID</th>
-                                <th class="border-0 text-uppercase small fw-bold p-3">NAME</th>
-                                <th class="border-0 text-uppercase small fw-bold p-3">DESCRIPTION</th>
-                                <th class="border-0 text-uppercase small fw-bold p-3">PRICE</th>
-                                <th class="border-0 text-uppercase small fw-bold p-3">DURATION</th>
-                                <th class="border-0 text-uppercase small fw-bold p-3">ACTIONS</th>
+                                <th class="border-0 text-uppercase small fw-bold p-3">{{ __('NAMA') }}</th>
+                                <th class="border-0 text-uppercase small fw-bold p-3">{{ __('DESKRIPSI') }}</th>
+                                <th class="border-0 text-uppercase small fw-bold p-3">{{ __('HARGA') }}</th>
+                                <th class="border-0 text-uppercase small fw-bold p-3">{{ __('DURASI') }}</th>
+                                <th class="border-0 text-uppercase small fw-bold p-3">{{ __('AKSI') }}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -72,19 +70,19 @@
                                     </td>
                                     <td class="p-3">
                                         <span class="badge rounded-pill text-white px-3 py-2 fw-bold" style="background: linear-gradient(135deg, #36b9cc, #258391);">
-                                            <i class="fas fa-clock me-1"></i> {{ $service->duration }} minutes
+                                            <i class="fas fa-clock me-1"></i> {{ $service->duration }} {{ __('menit') }}
                                         </span>
                                     </td>
                                     <td class="p-3">
                                         <div class="d-flex gap-2">
-                                            <a href="{{ route('services.edit', $service) }}" class="btn btn-warning btn-sm shadow-sm">
-                                                <i class="fas fa-edit me-1"></i> Edit
+                                            <a href="{{ route('services.edit', $service) }}" class="btn btn-sm btn-warning">
+                                                <i class="fas fa-edit"></i> {{ __('Edit') }}
                                             </a>
                                             <form action="{{ route('services.destroy', $service) }}" method="POST">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" class="btn btn-danger btn-sm shadow-sm" onclick="return confirm('Are you sure you want to delete this service?')">
-                                                    <i class="fas fa-trash-alt me-1"></i> Delete
+                                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('{{ __('Apakah Anda yakin ingin menghapus layanan ini?') }}')">
+                                                    <i class="fas fa-trash"></i> {{ __('Hapus') }}
                                                 </button>
                                             </form>
                                         </div>

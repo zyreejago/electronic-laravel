@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Reports & Analytics') }}
+            {{ __('Laporan & Analitik') }}
         </h2>
     </x-slot>
 
@@ -12,19 +12,19 @@
                 <form class="row g-3">
                     <div class="col-md-4">
                         <label for="dateFrom" class="form-label fw-bold text-primary">
-                            <i class="fas fa-calendar-alt me-2"></i>From Date
+                            <i class="fas fa-calendar-alt me-2"></i>{{ __('Dari Tanggal') }}
                         </label>
                         <input type="date" class="form-control form-control-lg border-0 shadow-sm" id="dateFrom" name="date_from" value="{{ request('date_from', now()->subMonths(3)->format('Y-m-d')) }}">
                     </div>
                     <div class="col-md-4">
                         <label for="dateTo" class="form-label fw-bold text-primary">
-                            <i class="fas fa-calendar-alt me-2"></i>To Date
+                            <i class="fas fa-calendar-alt me-2"></i>{{ __('Sampai Tanggal') }}
                         </label>
                         <input type="date" class="form-control form-control-lg border-0 shadow-sm" id="dateTo" name="date_to" value="{{ request('date_to', now()->format('Y-m-d')) }}">
                     </div>
                     <div class="col-md-4 d-flex align-items-end">
                         <button type="submit" class="btn btn-primary btn-lg w-100 shadow-sm">
-                            <i class="fas fa-filter me-2"></i>Apply Filter
+                            <i class="fas fa-filter me-2"></i>{{ __('Terapkan Filter') }}
                         </button>
                     </div>
                 </form>
@@ -41,11 +41,11 @@
                                 <i class="fas fa-calendar-check fa-2x text-white"></i>
                             </div>
                             <div class="p-4 flex-grow-1">
-                                <h6 class="text-uppercase text-muted mb-1 small fw-bold">TOTAL BOOKINGS</h6>
+                                <h6 class="text-uppercase text-muted mb-1 small fw-bold">{{ __('TOTAL BOOKING') }}</h6>
                                 <h2 class="display-5 fw-bold mb-1">{{ $totalBookings }}</h2>
                                 <p class="mb-0 text-success">
                                     <i class="fas fa-arrow-up me-1"></i>
-                                    <span class="fw-bold">12%</span> from last month
+                                    <span class="fw-bold">12%</span> {{ __('dari bulan lalu') }}
                                 </p>
                             </div>
                         </div>
@@ -61,11 +61,11 @@
                                 <i class="fas fa-check-circle fa-2x text-white"></i>
                             </div>
                             <div class="p-4 flex-grow-1">
-                                <h6 class="text-uppercase text-muted mb-1 small fw-bold">COMPLETED</h6>
+                                <h6 class="text-uppercase text-muted mb-1 small fw-bold">{{ __('SELESAI') }}</h6>
                                 <h2 class="display-5 fw-bold mb-1">{{ $completedBookings }}</h2>
                                 <p class="mb-0 text-success">
                                     <i class="fas fa-arrow-up me-1"></i>
-                                    <span class="fw-bold">8%</span> from last month
+                                    <span class="fw-bold">8%</span> {{ __('dari bulan lalu') }}
                                 </p>
                             </div>
                         </div>
@@ -81,11 +81,11 @@
                                 <i class="fas fa-clock fa-2x text-white"></i>
                             </div>
                             <div class="p-4 flex-grow-1">
-                                <h6 class="text-uppercase text-muted mb-1 small fw-bold">PENDING</h6>
+                                <h6 class="text-uppercase text-muted mb-1 small fw-bold">{{ __('MENUNGGU') }}</h6>
                                 <h2 class="display-5 fw-bold mb-1">{{ $pendingBookings }}</h2>
                                 <p class="mb-0 text-danger">
                                     <i class="fas fa-arrow-down me-1"></i>
-                                    <span class="fw-bold">3%</span> from last month
+                                    <span class="fw-bold">3%</span> {{ __('dari bulan lalu') }}
                                 </p>
                             </div>
                         </div>
@@ -101,11 +101,11 @@
                                 <i class="fas fa-money-bill-wave fa-2x text-white"></i>
                             </div>
                             <div class="p-4 flex-grow-1">
-                                <h6 class="text-uppercase text-muted mb-1 small fw-bold">REVENUE</h6>
+                                <h6 class="text-uppercase text-muted mb-1 small fw-bold">{{ __('PENDAPATAN') }}</h6>
                                 <h2 class="display-5 fw-bold mb-1">Rp {{ number_format($totalRevenue, 0, ',', '.') }}</h2>
                                 <p class="mb-0 text-success">
                                     <i class="fas fa-arrow-up me-1"></i>
-                                    <span class="fw-bold">15%</span> from last month
+                                    <span class="fw-bold">15%</span> {{ __('dari bulan lalu') }}
                                 </p>
                             </div>
                         </div>
@@ -121,11 +121,11 @@
                     <div class="card-header bg-white p-4 border-0">
                         <div class="d-flex justify-content-between align-items-center">
                             <h5 class="mb-0 fw-bold text-primary">
-                                <i class="fas fa-chart-line me-2"></i>Monthly Bookings
+                                <i class="fas fa-chart-line me-2"></i>{{ __('Booking Bulanan') }}
                             </h5>
                             <div class="btn-group">
-                                <button type="button" class="btn btn-primary active">6 Months</button>
-                                <button type="button" class="btn btn-outline-primary">1 Year</button>
+                                <button type="button" class="btn btn-primary active">{{ __('6 Bulan') }}</button>
+                                <button type="button" class="btn btn-outline-primary">{{ __('1 Tahun') }}</button>
                             </div>
                         </div>
                     </div>
@@ -140,7 +140,7 @@
                 <div class="card border-0 shadow rounded-4 overflow-hidden h-100">
                     <div class="card-header bg-white p-4 border-0">
                         <h5 class="mb-0 fw-bold text-primary">
-                            <i class="fas fa-trophy me-2"></i>Top Services
+                            <i class="fas fa-trophy me-2"></i>{{ __('Layanan Teratas') }}
                         </h5>
                     </div>
                     <div class="card-body p-4">
@@ -191,7 +191,7 @@
         <div class="card border-0 shadow rounded-4 overflow-hidden mb-4">
             <div class="card-header bg-white p-4 border-0">
                 <h5 class="mb-0 fw-bold text-primary">
-                    <i class="fas fa-users-cog me-2"></i>Technician Performance
+                    <i class="fas fa-users-cog me-2"></i>{{ __('Performa Teknisi') }}
                 </h5>
             </div>
             <div class="card-body p-0">
@@ -199,12 +199,12 @@
                     <table class="table table-hover align-middle mb-0">
                         <thead class="bg-light">
                             <tr>
-                                <th class="border-0 text-uppercase small fw-bold p-3">TECHNICIAN</th>
-                                <th class="border-0 text-uppercase small fw-bold p-3">COMPLETED JOBS</th>
-                                <th class="border-0 text-uppercase small fw-bold p-3">AVERAGE RATING</th>
-                                <th class="border-0 text-uppercase small fw-bold p-3">ON-TIME COMPLETION</th>
-                                <th class="border-0 text-uppercase small fw-bold p-3">TOTAL REVENUE</th>
-                                <th class="border-0 text-uppercase small fw-bold p-3">PERFORMANCE</th>
+                                <th class="border-0 text-uppercase small fw-bold p-3">{{ __('TEKNISI') }}</th>
+                                <th class="border-0 text-uppercase small fw-bold p-3">{{ __('PEKERJAAN SELESAI') }}</th>
+                                <th class="border-0 text-uppercase small fw-bold p-3">{{ __('RATING RATA-RATA') }}</th>
+                                <th class="border-0 text-uppercase small fw-bold p-3">{{ __('PENYELESAIAN TEPAT WAKTU') }}</th>
+                                <th class="border-0 text-uppercase small fw-bold p-3">{{ __('TOTAL PENDAPATAN') }}</th>
+                                <th class="border-0 text-uppercase small fw-bold p-3">{{ __('PERFORMA') }}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -218,7 +218,7 @@
                                             </div>
                                             <div>
                                                 <h6 class="mb-0 fw-bold">{{ $stat['name'] }}</h6>
-                                                <small class="text-muted">Technician</small>
+                                                <small class="text-muted">{{ __('Teknisi') }}</small>
                                             </div>
                                         </div>
                                     </td>
@@ -249,7 +249,7 @@
                                                 <div class="progress" style="height: 8px;">
                                                     <div class="progress-bar 
                                                         {{ $stat['on_time_percentage'] >= 90 ? 'bg-success' : ($stat['on_time_percentage'] >= 70 ? 'bg-warning' : 'bg-danger') }}" 
-                                                        role="progressbar" style="width: {{ $stat['on_time_percentage'] }}%;" 
+                                                        role="progressbar" style="width: {{ $stat['on_time_percentage'] }};" 
                                                         aria-valuenow="{{ $stat['on_time_percentage'] }}" aria-valuemin="0" aria-valuemax="100"></div>
                                                 </div>
                                             </div>
@@ -264,8 +264,8 @@
                                               style="background: linear-gradient(135deg, 
                                               {{ $stat['on_time_percentage'] >= 90 && $stat['average_rating'] >= 4.5 ? '#1cc88a, #13855c' : 
                                                  ($stat['on_time_percentage'] >= 70 && $stat['average_rating'] >= 3.5 ? '#f6c23e, #dda20a' : '#e74a3b, #be2617') }});">
-                                            {{ $stat['on_time_percentage'] >= 90 && $stat['average_rating'] >= 4.5 ? 'Excellent' : 
-                                               ($stat['on_time_percentage'] >= 70 && $stat['average_rating'] >= 3.5 ? 'Good' : 'Needs Improvement') }}
+                                            {{ $stat['on_time_percentage'] >= 90 && $stat['average_rating'] >= 4.5 ? __('Sangat Baik') : 
+                                               ($stat['on_time_percentage'] >= 70 && $stat['average_rating'] >= 3.5 ? __('Baik') : __('Perlu Perbaikan')) }}
                                         </span>
                                     </td>
                                 </tr>
@@ -274,6 +274,15 @@
                     </table>
                 </div>
             </div>
+        </div>
+        
+        <div class="d-flex gap-2">
+            <a href="{{ route('admin.export.bookings', request()->query()) }}" class="btn btn-success">
+                <i class="fas fa-file-excel me-1"></i> {{ __('Export Excel') }}
+            </a>
+            <a href="{{ route('admin.export.bookings.pdf', request()->query()) }}" class="btn btn-danger">
+                <i class="fas fa-file-pdf me-1"></i> {{ __('Export PDF') }}
+            </a>
         </div>
     </div>
 
@@ -288,7 +297,7 @@
             data: {
                 labels: @json($monthlyBookings->pluck('month')),
                 datasets: [{
-                    label: 'Number of Bookings',
+                    label: '{{ __('Jumlah Booking') }}',
                     data: @json($monthlyBookings->pluck('count')),
                     borderColor: '#4e73df',
                     backgroundColor: 'rgba(78, 115, 223, 0.1)',
@@ -323,12 +332,3 @@
     </script>
     @endpush
 </x-app-layout>
-
-<div class="d-flex gap-2">
-    <a href="{{ route('admin.export.bookings', request()->query()) }}" class="btn btn-success">
-        <i class="fas fa-file-excel me-1"></i> Export Excel
-    </a>
-    <a href="{{ route('admin.export.bookings.pdf', request()->query()) }}" class="btn btn-danger">
-        <i class="fas fa-file-pdf me-1"></i> Export PDF
-    </a>
-</div>

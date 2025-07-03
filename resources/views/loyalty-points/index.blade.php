@@ -2,7 +2,7 @@
     <x-slot name="header">
         <div class="d-flex justify-content-between align-items-center">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                {{ __('Loyalty Points') }}
+                {{ __('Poin Loyalitas') }}
             </h2>
         </div>
     </x-slot>
@@ -15,7 +15,7 @@
                         <i class="fas fa-check"></i>
                     </div>
                     <div>
-                        <strong>Success!</strong> {{ session('success') }}
+                        <strong>{{ __('Berhasil!') }}</strong> {{ session('success') }}
                     </div>
                     <button type="button" class="btn-close btn-close-white ms-auto" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
@@ -129,7 +129,7 @@
             <div class="card-header p-0">
                 <div style="background: linear-gradient(90deg, #4e73df, #224abe);" class="text-white p-4">
                     <h5 class="card-title mb-0 fw-bold">
-                        <i class="fas fa-history me-2"></i>Transaction History
+                        <i class="fas fa-history me-2"></i>{{ __('Riwayat Transaksi') }}
                     </h5>
                 </div>
             </div>

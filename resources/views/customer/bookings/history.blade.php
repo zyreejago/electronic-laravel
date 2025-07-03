@@ -14,19 +14,19 @@
                 <div class="col-md-6">
                     <form method="GET" class="d-flex gap-2">
                         <select name="year" class="form-select">
-                            <option value="">Pilih Tahun</option>
+                            <option value="">{{ __('Pilih Tahun') }}</option>
                             @foreach($years as $year)
                                 <option value="{{ $year }}" {{ request('year') == $year ? 'selected' : '' }}>{{ $year }}</option>
                             @endforeach
                         </select>
                         <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-filter"></i> Filter
+                            <i class="fas fa-filter"></i> {{ __('Filter') }}
                         </button>
                     </form>
                 </div>
                 <div class="col-md-6 text-end">
                     <a href="{{ route('customer.bookings.export-history', request()->all()) }}" class="btn btn-success">
-                        <i class="fas fa-file-excel me-1"></i> Export Excel
+                        <i class="fas fa-file-excel me-1"></i> {{ __('Export Excel') }}
                     </a>
                 </div>
             </div>
@@ -37,12 +37,12 @@
                     <table class="table table-hover">
                         <thead class="bg-light">
                             <tr>
-                                <th>ID</th>
-                                <th>Service</th>
-                                <th>Tanggal</th>
-                                <th>Status</th>
-                                <th>Harga</th>
-                                <th>Aksi</th>
+                                <th>{{ __('ID') }}</th>
+                                <th>{{ __('Layanan') }}</th>
+                                <th>{{ __('Tanggal') }}</th>
+                                <th>{{ __('Status') }}</th>
+                                <th>{{ __('Harga') }}</th>
+                                <th>{{ __('Aksi') }}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -56,7 +56,7 @@
                                             {{ ucfirst($booking->status) }}
                                         </span>
                                     </td>
-                                    <td>Rp {{ number_format($booking->total_price, 0, ',', '.') }}</td>
+                                    <td>{{ __('Rp') }} {{ number_format($booking->total_price, 0, ',', '.') }}</td>
                                     <td>
                                         <a href="{{ route('customer.bookings.show', $booking) }}" class="btn btn-sm btn-primary">
                                             <i class="fas fa-eye"></i>
@@ -73,8 +73,8 @@
             @else
                 <div class="text-center py-5">
                     <i class="fas fa-history fa-3x text-muted mb-3"></i>
-                    <h5>Belum Ada Riwayat</h5>
-                    <p class="text-muted">Anda belum memiliki riwayat service.</p>
+                    <h5>{{ __('Belum Ada Riwayat') }}</h5>
+                    <p class="text-muted">{{ __('Anda belum memiliki riwayat service.') }}</p>
                 </div>
             @endif
         </div>

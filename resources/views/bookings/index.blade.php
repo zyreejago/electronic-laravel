@@ -2,7 +2,7 @@
     <x-slot name="header">
         <div class="d-flex justify-content-between align-items-center">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                {{ __('My Bookings') }}
+                {{ __('Booking Saya') }}
             </h2>
             {{-- <a href="{{ route('bookings.create') }}" class="btn btn-primary btn-lg shadow-sm">
                 <i class="fas fa-plus-circle me-2"></i>New Booking
@@ -18,7 +18,7 @@
                         <i class="fas fa-check"></i>
                     </div>
                     <div>
-                        <strong>Success!</strong> {{ session('success') }}
+                        <strong>{{ __('Berhasil!') }}</strong> {{ session('success') }}
                     </div>
                     <button type="button" class="btn-close btn-close-white ms-auto" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
@@ -30,34 +30,34 @@
             <div class="card-header p-0">
                 <div class="bg-primary text-white p-3 text-center">
                     <h5 class="mb-0 fw-bold">
-                        <i class="fas fa-filter me-2"></i>Filter Bookings
+                        <i class="fas fa-filter me-2"></i>{{ __('Filter Booking') }}
                     </h5>
                 </div>
             </div>
             <div class="card-body p-4 bg-light bg-gradient">
                 <form class="row g-3">
                     <div class="col-md-4">
-                        <label for="statusFilter" class="form-label fw-bold text-primary">Status</label>
+                        <label for="statusFilter" class="form-label fw-bold text-primary">{{ __('Status') }}</label>
                         <select class="form-select form-select-lg border-0 shadow-sm" id="statusFilter" name="status">
-                            <option value="">All Statuses</option>
-                            <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Pending</option>
-                            <option value="in_progress" {{ request('status') == 'in_progress' ? 'selected' : '' }}>In Progress</option>
-                            <option value="completed" {{ request('status') == 'completed' ? 'selected' : '' }}>Completed</option>
-                            <option value="cancelled" {{ request('status') == 'cancelled' ? 'selected' : '' }}>Cancelled</option>
+                            <option value="">{{ __('Semua Status') }}</option>
+                            <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>{{ __('Menunggu') }}</option>
+                            <option value="in_progress" {{ request('status') == 'in_progress' ? 'selected' : '' }}>{{ __('Sedang Berlangsung') }}</option>
+                            <option value="completed" {{ request('status') == 'completed' ? 'selected' : '' }}>{{ __('Selesai') }}</option>
+                            <option value="cancelled" {{ request('status') == 'cancelled' ? 'selected' : '' }}>{{ __('Dibatalkan') }}</option>
                         </select>
                     </div>
                     <div class="col-md-4">
-                        <label for="dateFilter" class="form-label fw-bold text-primary">Date Range</label>
+                        <label for="dateFilter" class="form-label fw-bold text-primary">{{ __('Rentang Tanggal') }}</label>
                         <select class="form-select form-select-lg border-0 shadow-sm" id="dateFilter" name="date_range">
-                            <option value="">All Time</option>
-                            <option value="today" {{ request('date_range') == 'today' ? 'selected' : '' }}>Today</option>
-                            <option value="week" {{ request('date_range') == 'week' ? 'selected' : '' }}>This Week</option>
-                            <option value="month" {{ request('date_range') == 'month' ? 'selected' : '' }}>This Month</option>
+                            <option value="">{{ __('Sepanjang Waktu') }}</option>
+                            <option value="today" {{ request('date_range') == 'today' ? 'selected' : '' }}>{{ __('Hari Ini') }}</option>
+                            <option value="week" {{ request('date_range') == 'week' ? 'selected' : '' }}>{{ __('Minggu Ini') }}</option>
+                            <option value="month" {{ request('date_range') == 'month' ? 'selected' : '' }}>{{ __('Bulan Ini') }}</option>
                         </select>
                     </div>
                     <div class="col-md-4 d-flex align-items-end">
                         <button type="submit" class="btn btn-primary btn-lg w-100 shadow-sm">
-                            <i class="fas fa-search me-2"></i> Apply Filter
+                            <i class="fas fa-search me-2"></i> {{ __('Terapkan Filter') }}
                         </button>
                     </div>
                 </form>
@@ -70,19 +70,19 @@
                 <div style="background: linear-gradient(90deg, #4e73df, #224abe);" class="text-white p-4">
                     <div class="d-flex justify-content-between align-items-center">
                         <h5 class="card-title mb-0 fw-bold">
-                            <i class="fas fa-calendar-check me-2"></i>My Bookings
+                            <i class="fas fa-calendar-check me-2"></i>{{ __('Booking Saya') }}
                         </h5>
                         <div class="d-flex gap-2">
                             <div class="dropdown">
                                 <button class="btn btn-light btn-sm dropdown-toggle" type="button" id="sortDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <i class="fas fa-sort me-1"></i> Sort
+                                    <i class="fas fa-sort me-1"></i> {{ __('Urutkan') }}
                                 </button>
                                 <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="sortDropdown">
-                                    <li><a class="dropdown-item" href="{{ request()->fullUrlWithQuery(['sort' => 'newest']) }}"><i class="fas fa-sort-amount-down me-2"></i> Newest First</a></li>
-                                    <li><a class="dropdown-item" href="{{ request()->fullUrlWithQuery(['sort' => 'oldest']) }}"><i class="fas fa-sort-amount-up me-2"></i> Oldest First</a></li>
+                                    <li><a class="dropdown-item" href="{{ request()->fullUrlWithQuery(['sort' => 'newest']) }}"><i class="fas fa-sort-amount-down me-2"></i> {{ __('Terbaru Dulu') }}</a></li>
+                                    <li><a class="dropdown-item" href="{{ request()->fullUrlWithQuery(['sort' => 'oldest']) }}"><i class="fas fa-sort-amount-up me-2"></i> {{ __('Terlama Dulu') }}</a></li>
                                     <li><hr class="dropdown-divider"></li>
-                                    <li><a class="dropdown-item" href="{{ request()->fullUrlWithQuery(['sort' => 'price_high']) }}"><i class="fas fa-sort-numeric-down-alt me-2"></i> Price: High to Low</a></li>
-                                    <li><a class="dropdown-item" href="{{ request()->fullUrlWithQuery(['sort' => 'price_low']) }}"><i class="fas fa-sort-numeric-up me-2"></i> Price: Low to High</a></li>
+                                    <li><a class="dropdown-item" href="{{ request()->fullUrlWithQuery(['sort' => 'price_high']) }}"><i class="fas fa-sort-numeric-down-alt me-2"></i> {{ __('Harga: Tinggi ke Rendah') }}</a></li>
+                                    <li><a class="dropdown-item" href="{{ request()->fullUrlWithQuery(['sort' => 'price_low']) }}"><i class="fas fa-sort-numeric-up me-2"></i> {{ __('Harga: Rendah ke Tinggi') }}</a></li>
                                 </ul>
                             </div>
                         </div>
@@ -109,7 +109,7 @@
                                         <td class="p-3">
                                             <span class="fw-bold">#{{ $booking->id }}</span>
                                             @if($booking->is_emergency)
-                                                <span class="badge bg-danger ms-2"><i class="fas fa-bolt me-1"></i>Emergency</span>
+                                                <span class="badge bg-danger ms-2"><i class="fas fa-bolt me-1"></i>{{ __('Darurat') }}</span>
                                             @endif
                                         </td>
                                         <td class="p-3">
@@ -167,13 +167,13 @@
                                                     @endphp
                                                     <span class="fw-bold">Rp {{ number_format($totalPrice, 0, ',', '.') }}</span>
                                                 @else
-                                                    <span class="fw-bold text-muted">Pending Inspection</span>
+                                                    <span class="fw-bold text-muted">{{ __('Menunggu Inspeksi') }}</span>
                                                 @endif
                                             </div>
                                         </td>
                                         <td class="p-3 text-end">
                                             <a href="{{ route('bookings.show', $booking) }}" class="btn btn-primary btn-sm">
-                                                <i class="fas fa-eye me-1"></i> View Details
+                                                <i class="fas fa-eye me-1"></i> {{ __('Lihat Detail') }}
                                             </a>
                                         </td>
                                     </tr>
@@ -190,14 +190,14 @@
                         <div class="rounded-circle bg-light p-4 mx-auto mb-3" style="width: 100px; height: 100px; display: flex; align-items: center; justify-content: center;">
                             <i class="fas fa-calendar-times fa-3x text-muted"></i>
                         </div>
-                        <h5 class="fw-bold">No Bookings Found</h5>
-                        <p class="text-muted mb-4">You haven't made any bookings yet or no bookings match your filter criteria.</p>
+                        <h5 class="fw-bold">{{ __('Tidak Ada Booking') }}</h5>
+                        <p class="text-muted mb-4">{{ __('Anda belum membuat booking atau tidak ada booking yang sesuai dengan kriteria filter.') }}</p>
                         <div class="d-flex justify-content-center gap-3">
                             {{-- <a href="{{ route('bookings.create') }}" class="btn btn-primary">
                                 <i class="fas fa-plus-circle me-2"></i>Create New Booking
                             </a> --}}
                             <a href="{{ route('bookings.index') }}" class="btn btn-outline-secondary">
-                                <i class="fas fa-sync-alt me-2"></i>Reset Filters
+                                <i class="fas fa-sync-alt me-2"></i>{{ __('Reset Filter') }}
                             </a>
                         </div>
                     </div>

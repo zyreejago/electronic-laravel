@@ -6,10 +6,10 @@
             </h2>
             <div>
                 <a href="{{ route('admin.inventory.create') }}" class="btn btn-primary btn-lg shadow-sm me-2">
-                    <i class="fas fa-plus me-2"></i>Tambah Barang
+                    <i class="fas fa-plus me-2"></i>{{ __('Tambah Barang') }}
                 </a>
                 <a href="{{ route('admin.inventory.monthly-report') }}" class="btn btn-info btn-lg shadow-sm">
-                    <i class="fas fa-chart-bar me-2"></i>Laporan Bulanan
+                    <i class="fas fa-chart-bar me-2"></i>{{ __('Laporan Bulanan') }}
                 </a>
             </div>
         </div>
@@ -23,7 +23,7 @@
                         <i class="fas fa-check"></i>
                     </div>
                     <div>
-                        <strong>Success!</strong> {{ session('success') }}
+                        <strong>{{ __('Berhasil!') }}</strong> {{ session('success') }}
                     </div>
                     <button type="button" class="btn-close btn-close-white ms-auto" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
@@ -37,7 +37,7 @@
                         <i class="fas fa-exclamation-triangle"></i>
                     </div>
                     <div>
-                        <strong>Error!</strong> {{ session('error') }}
+                        <strong>{{ __('Error!') }}</strong> {{ session('error') }}
                     </div>
                     <button type="button" class="btn-close btn-close-white ms-auto" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
@@ -49,10 +49,10 @@
                 <div style="background: linear-gradient(90deg, #1cc88a, #13855c);" class="text-white p-4">
                     <div class="d-flex justify-content-between align-items-center">
                         <h5 class="card-title mb-0 fw-bold">
-                            <i class="fas fa-boxes me-2"></i>Daftar Inventori
+                            <i class="fas fa-boxes me-2"></i>{{ __('Daftar Inventori') }}
                         </h5>
                         <span class="badge bg-white text-dark px-3 py-2">
-                            Total: {{ $items->count() }} items
+                            {{ __('Total:') }} {{ $items->count() }} {{ __('barang') }}
                         </span>
                     </div>
                 </div>
@@ -62,12 +62,12 @@
                     <table class="table table-hover align-middle mb-0">
                         <thead class="bg-light">
                             <tr>
-                                <th class="border-0 text-uppercase small fw-bold p-3">BARANG</th>
-                                <th class="border-0 text-uppercase small fw-bold p-3">STOK MINIM</th>
-                                <th class="border-0 text-uppercase small fw-bold p-3">HARGA</th>
-                                <th class="border-0 text-uppercase small fw-bold p-3">KONDISI</th>
-                                <th class="border-0 text-uppercase small fw-bold p-3">STATUS</th>
-                                <th class="border-0 text-uppercase small fw-bold p-3">ACTIONS</th>
+                                <th class="border-0 text-uppercase small fw-bold p-3">{{ __('BARANG') }}</th>
+                                <th class="border-0 text-uppercase small fw-bold p-3">{{ __('STOK MINIM') }}</th>
+                                <th class="border-0 text-uppercase small fw-bold p-3">{{ __('HARGA') }}</th>
+                                <th class="border-0 text-uppercase small fw-bold p-3">{{ __('KONDISI') }}</th>
+                                <th class="border-0 text-uppercase small fw-bold p-3">{{ __('STATUS') }}</th>
+                                <th class="border-0 text-uppercase small fw-bold p-3">{{ __('AKSI') }}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -91,7 +91,7 @@
                                             <small class="text-muted ms-1">{{ $item->minimum_stock }}</small>
                                         </div>
                                         @if($item->isLowStock())
-                                            <small class="text-warning"><i class="fas fa-exclamation-triangle me-1"></i>Stok Rendah</small>
+                                            <small class="text-warning"><i class="fas fa-exclamation-triangle me-1"></i>{{ __('Stok Rendah') }}</small>
                                         @endif
                                     </td>
                                     <td class="p-3">
@@ -112,13 +112,7 @@
                                             <a href="{{ route('admin.inventory.show', $item) }}" class="btn btn-sm btn-outline-primary">
                                                 <i class="fas fa-eye"></i>
                                             </a>
-                                            {{-- <a href="{{ route('admin.inventory.edit', $item) }}" class="btn btn-sm btn-outline-warning">
-                                                <i class="fas fa-edit"></i>
-                                            </a>
-                                            <button type="button" class="btn btn-sm btn-outline-success" data-bs-toggle="modal" data-bs-target="#restockModal{{ $item->id }}">
-                                                <i class="fas fa-plus"></i>
-                                            </button> --}}
-                                            <form action="{{ route('admin.inventory.destroy', $item) }}" method="POST" class="d-inline" onsubmit="return confirm('Yakin ingin menghapus item ini?')">
+                                            <form action="{{ route('admin.inventory.destroy', $item) }}" method="POST" class="d-inline" onsubmit="return confirm('{{ __('Yakin ingin menghapus item ini?') }}')">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="btn btn-sm btn-outline-danger">
@@ -134,28 +128,28 @@
                                     <div class="modal-dialog">
                                         <div class="modal-content">
                                             <div class="modal-header">
-                                                <h5 class="modal-title">Restock {{ $item->name }}</h5>
+                                                <h5 class="modal-title">{{ __('Restock') }} {{ $item->name }}</h5>
                                                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                             </div>
                                             <form action="{{ route('admin.inventory.restock', $item) }}" method="POST">
                                                 @csrf
                                                 <div class="modal-body">
                                                     <div class="mb-3">
-                                                        <label class="form-label">Jumlah Tambahan</label>
+                                                        <label class="form-label">{{ __('Jumlah Tambahan') }}</label>
                                                         <input type="number" class="form-control" name="quantity" min="1" required>
                                                     </div>
                                                     <div class="mb-3">
-                                                        <label class="form-label">Harga Beli per Unit</label>
+                                                        <label class="form-label">{{ __('Harga Beli per Unit') }}</label>
                                                         <input type="number" class="form-control" name="purchase_price" step="0.01" required>
                                                     </div>
                                                     <div class="mb-3">
-                                                        <label class="form-label">Supplier</label>
+                                                        <label class="form-label">{{ __('Supplier') }}</label>
                                                         <input type="text" class="form-control" name="supplier">
                                                     </div>
                                                 </div>
                                                 <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                                                    <button type="submit" class="btn btn-primary">Restock</button>
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ __('Batal') }}</button>
+                                                    <button type="submit" class="btn btn-primary">{{ __('Restock') }}</button>
                                                 </div>
                                             </form>
                                         </div>
@@ -166,7 +160,7 @@
                                     <td colspan="6" class="text-center p-5">
                                         <div class="text-muted">
                                             <i class="fas fa-box-open fa-3x mb-3"></i>
-                                            <p class="mb-0">Belum ada item inventori</p>
+                                            <p class="mb-0">{{ __('Belum ada item inventori') }}</p>
                                         </div>
                                     </td>
                                 </tr>

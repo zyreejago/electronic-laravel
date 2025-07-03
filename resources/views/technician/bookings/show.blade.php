@@ -4,10 +4,10 @@
     <div class="container py-4">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                {{ __('Booking Detail') }}
+                {{ __('Detail Booking') }}
             </h2>
             <a href="{{ route('technician.bookings.index') }}" class="btn btn-outline-success btn-lg shadow-sm">
-                <i class="fas fa-arrow-left me-2"></i>Back to Bookings
+                <i class="fas fa-arrow-left me-2"></i>{{ __('Kembali ke Booking') }}
             </a>
         </div>
 
@@ -59,7 +59,7 @@
                     <div class="card-header p-0">
                         <div style="background: linear-gradient(90deg, #1cc88a, #13855c);" class="text-white p-4">
                             <h5 class="card-title mb-0 fw-bold">
-                                <i class="fas fa-info-circle me-2"></i>Booking Information
+                                <i class="fas fa-info-circle me-2"></i>{{ __('Informasi Booking') }}
                             </h5>
                         </div>
                     </div>
@@ -73,22 +73,22 @@
                                         {{ substr($booking->user->name, 0, 1) }}
                                     </div>
                                     <div>
-                                        <h6 class="fw-bold mb-0">Customer Information</h6>
-                                        <small class="text-muted">Booking made by</small>
+                                        <h6 class="fw-bold mb-0">{{ __('Informasi Pelanggan') }}</h6>
+                                        <small class="text-muted">{{ __('Booking dibuat oleh') }}</small>
                                     </div>
                                 </div>
                                 <div class="ps-5 mb-4">
                                     <div class="mb-2">
-                                        <span class="text-muted">Name:</span>
+                                        <span class="text-muted">{{ __('Nama:') }}</span>
                                         <span class="fw-bold ms-2">{{ $booking->user->name }}</span>
                                     </div>
                                     <div class="mb-2">
-                                        <span class="text-muted">Email:</span>
+                                        <span class="text-muted">{{ __('Email:') }}</span>
                                         <span class="fw-bold ms-2">{{ $booking->user->email }}</span>
                                     </div>
                                     <div>
-                                        <span class="text-muted">Phone:</span>
-                                        <span class="fw-bold ms-2">{{ $booking->user->phone_number ?? 'Not provided' }}</span>
+                                        <span class="text-muted">{{ __('Telepon:') }}</span>
+                                        <span class="fw-bold ms-2">{{ $booking->user->phone_number ?? __('Tidak disediakan') }}</span>
                                     </div>
                                 </div>
                             </div>
@@ -101,114 +101,35 @@
                                         <i class="fas fa-tools fa-lg"></i>
                                     </div>
                                     <div>
-                                        <h6 class="fw-bold mb-0">Service Information</h6>
-                                        <small class="text-muted">Service details</small>
+                                        <h6 class="fw-bold mb-0">{{ __('Informasi Layanan') }}</h6>
+                                        <small class="text-muted">{{ __('Detail layanan') }}</small>
                                     </div>
                                 </div>
                                 <div class="ps-5 mb-4">
                                     <div class="mb-2">
-                                        <span class="text-muted">Service:</span>
+                                        <span class="text-muted">{{ __('Layanan:') }}</span>
                                         <span class="fw-bold ms-2">{{ $booking->service->name }}</span>
                                     </div>
-                                    {{-- <div class="mb-2">
-                                        <span class="text-muted">Base Price:</span>
-                                        <span class="fw-bold ms-2">Rp {{ number_format($booking->estimated_cost?? 0, 0, ',', '.') }}</span>
-                                    </div>
                                     <div class="mb-2">
-                                        <span class="text-muted">Estimated Cost (After Inspection):</span>
+                                        <span class="text-muted">{{ __('Total Harga:') }}</span>
                                         @if($booking->inspection_completed_at && $booking->estimated_cost)
                                             <span class="fw-bold ms-2">Rp {{ number_format($booking->estimated_cost, 0, ',', '.') }}</span>
                                         @else
                                             <span class="fw-bold ms-2 text-muted">Belum ada pemeriksaan</span>
                                         @endif
-                                    </div> --}}
-                                    <div class="mb-2">
-                                        <span class="text-muted">Total Price:</span>
-                                        @if($booking->inspection_completed_at && $booking->estimated_cost)
-                                            @php
-                                                // Perhitungan total yang konsisten
-                                                $serviceComponentsCost = $booking->serviceComponents->sum(function($c) { 
-                                                    return $c->pivot->quantity * $c->pivot->price_at_time; 
-                                                });
-                                                $inventoryCost = $booking->inventory_cost ?? 0;
-                                                $estimatedCost = $booking->estimated_cost ?? 0;
-                                                $deliveryFee = 0;
-                                                $emergencyFee = 0;
-                                                
-                                                // Delivery fee
-                                                if(in_array($booking->service_type, ['pickup', 'onsite'])) {
-                                                    $deliveryFee = 50000;
-                                                }
-                                                
-                                                // Emergency fee
-                                                if($booking->is_emergency) {
-                                                    $emergencyFee = 100000;
-                                                }
-                                                
-                                                $loyaltyDiscount = ($booking->loyalty_points_used ?? 0) * 100;
-                                                $totalPrice = $estimatedCost + $inventoryCost + $serviceComponentsCost + $deliveryFee + $emergencyFee - $loyaltyDiscount;
-                                            @endphp
-                                            <span class="fw-bold ms-2 text-primary h6">Rp {{ number_format($totalPrice, 0, ',', '.') }}</span>
-                                        @else
-                                            <span class="fw-bold ms-2 text-muted h6">Menunggu pemeriksaan</span>
-                                        @endif
                                     </div>
-                                    
-                                    <!-- Total Price Breakdown -->
-                                    {{-- @if($booking->inspection_completed_at && $booking->estimated_cost)
-                                        <div class="mt-3 p-3 bg-light rounded-3">
-                                            <h6 class="fw-bold text-primary mb-3"><i class="fas fa-calculator me-2"></i>Price Breakdown</h6>
-                                            <div class="row g-2 small">
-                                                <div class="col-8 text-muted">Estimated Service Cost:</div>
-                                                <div class="col-4 text-end fw-bold">Rp {{ number_format($estimatedCost, 0, ',', '.') }}</div>
-                                                
-                                                @if($inventoryCost > 0)
-                                                    <div class="col-8 text-muted">Inventory Cost:</div>
-                                                    <div class="col-4 text-end fw-bold">Rp {{ number_format($inventoryCost, 0, ',', '.') }}</div>
-                                                @endif
-                                                
-                                                @if($serviceComponentsCost > 0)
-                                                    <div class="col-8 text-muted">Service Components:</div>
-                                                    <div class="col-4 text-end fw-bold">Rp {{ number_format($serviceComponentsCost, 0, ',', '.') }}</div>
-                                                @endif
-                                                
-                                                @if($deliveryFee > 0)
-                                                    <div class="col-8 text-muted">{{ ucfirst($booking->service_type) }} Fee:</div>
-                                                    <div class="col-4 text-end fw-bold">Rp {{ number_format($deliveryFee, 0, ',', '.') }}</div>
-                                                @endif
-                                                
-                                                @if($emergencyFee > 0)
-                                                    <div class="col-8 text-muted">Emergency Fee:</div>
-                                                    <div class="col-4 text-end fw-bold">Rp {{ number_format($emergencyFee, 0, ',', '.') }}</div>
-                                                @endif
-                                                
-                                                @if($loyaltyDiscount > 0)
-                                                    <div class="col-8 text-muted text-success">Loyalty Points Discount:</div>
-                                                    <div class="col-4 text-end fw-bold text-success">-Rp {{ number_format($loyaltyDiscount, 0, ',', '.') }}</div>
-                                                @endif
-                                                
-                                                <hr class="my-2">
-                                                <div class="col-8 fw-bold text-primary">Total Amount:</div>
-                                                <div class="col-4 text-end fw-bold text-primary h6">Rp {{ number_format($totalPrice, 0, ',', '.') }}</div>
-                                            </div>
-                                        </div>
-                                    @endif --}}
-                                    {{-- <div class="mb-2">
-                                        <span class="text-muted">Duration:</span>
-                                        <span class="fw-bold ms-2">{{ $booking->service->duration ?? 0 }} minutes</span>
-                                    </div> --}}
                                     <div>
-                                        <span class="text-muted">Service Type:</span>
+                                        <span class="text-muted">{{ __('Jenis Layanan:') }}</span>
                                         <span class="fw-bold ms-2">{{ ucfirst($booking->service_type) }}</span>
                                     </div>
                                     @if($booking->is_emergency)
                                         <div class="mt-2">
-                                            <span class="badge bg-danger"><i class="fas fa-bolt me-1"></i>Emergency Service (+Rp 100,000)</span>
+                                            <span class="badge bg-danger"><i class="fas fa-bolt me-1"></i>{{ __('Layanan Darurat (+Rp 100,000)') }}</span>
                                         </div>
                                     @endif
                                     @if(in_array($booking->service_type, ['pickup', 'onsite']))
                                         <div class="mt-2">
-                                            <span class="badge bg-info">{{ ucfirst($booking->service_type) }} Service (+Rp 50,000)</span>
+                                            <span class="badge bg-info">{{ ucfirst($booking->service_type) }} {{ __('Layanan (+Rp 50,000)') }}</span>
                                         </div>
                                     @endif
                                 </div>
@@ -217,73 +138,49 @@
 
                         <!-- Total Price Breakdown -->
                         @if($booking->inspection_completed_at && $booking->estimated_cost)
-                            @php
-                                // Perhitungan total yang konsisten
-                                $serviceComponentsCost = $booking->serviceComponents->sum(function($c) { 
-                                    return $c->pivot->quantity * $c->pivot->price_at_time; 
-                                });
-                                $inventoryCost = $booking->inventory_cost ?? 0;
-                                $estimatedCost = $booking->estimated_cost ?? 0;
-                                $deliveryFee = 0;
-                                $emergencyFee = 0;
-                                
-                                // Delivery fee
-                                if(in_array($booking->service_type, ['pickup', 'onsite'])) {
-                                    $deliveryFee = 50000;
-                                }
-                                
-                                // Emergency fee
-                                if($booking->is_emergency) {
-                                    $emergencyFee = 100000;
-                                }
-                                
-                                $loyaltyDiscount = ($booking->loyalty_points_used ?? 0) * 100;
-                                $totalPrice = $estimatedCost + $inventoryCost + $serviceComponentsCost + $deliveryFee + $emergencyFee - $loyaltyDiscount;
-                            @endphp
-                            
                             <div class="d-flex align-items-center mb-3">
                                 <div class="rounded-circle bg-success bg-opacity-10 text-success p-2 me-3" 
                                      style="width: 45px; height: 45px; display: flex; align-items: center; justify-content: center;">
                                     <i class="fas fa-calculator fa-lg"></i>
                                 </div>
                                 <div>
-                                    <h6 class="fw-bold mb-0">Total Price Breakdown</h6>
-                                    <small class="text-muted">Detailed cost calculation</small>
+                                    <h6 class="fw-bold mb-0">{{ __('Rincian Total Harga') }}</h6>
+                                    <small class="text-muted">{{ __('Perhitungan biaya detail') }}</small>
                                 </div>
                             </div>
                             <div class="ps-5 mb-4">
                                 <div class="p-3 bg-light rounded-3">
                                     <div class="row g-2 small">
-                                        <div class="col-8 text-muted">Estimated Service Cost:</div>
+                                        <div class="col-8 text-muted">{{ __('Estimasi Biaya Layanan:') }}</div>
                                         <div class="col-4 text-end fw-bold">Rp {{ number_format($estimatedCost, 0, ',', '.') }}</div>
                                         
                                         @if($inventoryCost > 0)
-                                            <div class="col-8 text-muted">Inventory Cost:</div>
+                                            <div class="col-8 text-muted">{{ __('Biaya Inventori:') }}</div>
                                             <div class="col-4 text-end fw-bold">Rp {{ number_format($inventoryCost, 0, ',', '.') }}</div>
                                         @endif
                                         
                                         @if($serviceComponentsCost > 0)
-                                            <div class="col-8 text-muted">Service Components:</div>
+                                            <div class="col-8 text-muted">{{ __('Komponen Layanan:') }}</div>
                                             <div class="col-4 text-end fw-bold">Rp {{ number_format($serviceComponentsCost, 0, ',', '.') }}</div>
                                         @endif
                                         
                                         @if($deliveryFee > 0)
-                                            <div class="col-8 text-muted">{{ ucfirst($booking->service_type) }} Fee:</div>
+                                            <div class="col-8 text-muted">{{ ucfirst($booking->service_type) }} {{ __('Biaya:') }}</div>
                                             <div class="col-4 text-end fw-bold">Rp {{ number_format($deliveryFee, 0, ',', '.') }}</div>
                                         @endif
                                         
                                         @if($emergencyFee > 0)
-                                            <div class="col-8 text-muted">Emergency Fee:</div>
+                                            <div class="col-8 text-muted">{{ __('Biaya Darurat:') }}</div>
                                             <div class="col-4 text-end fw-bold">Rp {{ number_format($emergencyFee, 0, ',', '.') }}</div>
                                         @endif
                                         
                                         @if($loyaltyDiscount > 0)
-                                            <div class="col-8 text-muted text-success">Loyalty Points Discount:</div>
+                                            <div class="col-8 text-muted text-success">{{ __('Diskon Poin Loyalitas:') }}</div>
                                             <div class="col-4 text-end fw-bold text-success">-Rp {{ number_format($loyaltyDiscount, 0, ',', '.') }}</div>
                                         @endif
                                         
                                         <hr class="my-2">
-                                        <div class="col-8 fw-bold text-primary">Total Amount:</div>
+                                        <div class="col-8 fw-bold text-primary">{{ __('Total Jumlah:') }}</div>
                                         <div class="col-4 text-end fw-bold text-primary h6">Rp {{ number_format($totalPrice, 0, ',', '.') }}</div>
                                     </div>
                                 </div>

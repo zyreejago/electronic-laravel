@@ -99,11 +99,11 @@
                                     </a>
                                 @else
                                     <a href="{{ route('login') }}" class="btn btn-outline-primary me-2">
-                                        <i class="fas fa-sign-in-alt me-1"></i> Login
+                                        <i class="fas fa-sign-in-alt me-1"></i> {{ __('Masuk') }}
                                     </a>
                                     @if (Route::has('register'))
                                         <a href="{{ route('register') }}" class="btn btn-primary">
-                                            <i class="fas fa-user-plus me-1"></i> Register
+                                            <i class="fas fa-user-plus me-1"></i> {{ __('Daftar') }}
                                         </a>
                                     @endif
                                 @endauth
